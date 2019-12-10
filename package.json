@@ -1,7 +1,7 @@
 {
-  "name": "angular6-json-schema-form-app",
+  "name": "@alekart/angular-json-schema-form-app",
   "version": "0.7.4-legacy.0",
-  "author": "https://github.com/hamzahamidi/Angular6-json-schema-form/graphs/contributors",
+  "author": "https://github.com/alekart/angular-json-schema-form/graphs/contributors",
   "description": "Angular JSON Schema Form builder Demo",
   "engines": {
     "node": ">=8.9.0",
@@ -9,38 +9,28 @@
   },
   "keywords": [
     "Angular",
-    "ng",
-    "Angular6",
-    "Angular 6",
-    "ng6",
-    "Angular7",
-    "Angular 7",
-    "ng7",
     "JSON Schema",
-    "form",
-    "forms",
     "form builder"
   ],
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hamzahamidi/angular6-json-schema-form"
+    "url": "ssh://github.com/alekart/angular-json-schema-form.git",
+    "directory": "packages/angular-json-schema-form"
   },
-  "bugs": {
-    "url": "https://github.com/hamzahamidi/angular6-json-schema-form/issues"
-  },
-  "homepage": "https://github.com/hamzahamidi/Angular6-json-schema-form#readme",
   "scripts": {
     "ng": "ng",
-    "prestart": "npm run buildlibdev",
+    "prestart": "npm run build-lib-dev",
     "start": "ng serve",
     "start-prod": "ng serve --prod",
-    "build": "ng build --prod --base-href ./",
-    "buildlibdev": "ng build angular6-json-schema-form",
-    "buildlib": "ng build angular6-json-schema-form --prod",
-    "postbuildlib": "cp  README.md LICENSE  dist/angular6-json-schema-form/",
-    "prestats": "ng build --prod --stats-json",
-    "stats": "webpack-bundle-analyzer dist/angular6-json-schema-form-app/stats.json",
+    "build-lib": "ng build angular6-json-schema-form --prod",
+    "build-lib-dev": "ng build angular6-json-schema-form",
+    "postbuild-lib": "cp  README.md LICENSE  dist/angular6-json-schema-form/",
+    "buildDemo": "yarn build-lib && ng build --prod --base-href ./",
+    "publish": "cd ./dist/eer-view && npm publish",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -88,10 +78,7 @@
     "tsickle": ">=0.29.0",
     "tslib": "^1.7.1",
     "tslint": "~5.11.0",
-    "node-sass": "^4.14.1",
-    "node-gyp": "^7.0.0",
-    "typescript": "~3.2.3",
-    "webpack-bundle-analyzer": "^3.0.3"
+    "typescript": "~3.2.3"
   },
   "ngPackage": {
     "whitelistedNonPeerDependencies": [

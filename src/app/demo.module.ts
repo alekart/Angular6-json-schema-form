@@ -29,7 +29,7 @@ import { routes } from './demo.routes';
 import {
   MaterialDesignFrameworkModule, Bootstrap4FrameworkModule,
   Bootstrap3FrameworkModule, NoFrameworkModule
-} from 'angular6-json-schema-form';
+} from '@alekart/angular-json-schema-form';
 
 @NgModule({
   declarations: [AceEditorDirective, DemoComponent, DemoRootComponent],
