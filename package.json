@@ -28,9 +28,9 @@
     "start-prod": "ng serve --prod",
     "build-lib": "ng build angular6-json-schema-form --prod",
     "build-lib-dev": "ng build angular6-json-schema-form",
-    "postbuild-lib": "cp  README.md LICENSE  dist/angular6-json-schema-form/",
+    "postbuild-lib": "cp README.md LICENSE  dist/angular-json-schema-form/",
     "buildDemo": "yarn build-lib && ng build --prod --base-href ./",
-    "publish": "cd ./dist/eer-view && npm publish",
+    "publish": "cd ./dist/angular-json-schema-form && npm publish",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
