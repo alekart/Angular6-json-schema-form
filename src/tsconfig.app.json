@@ -2,7 +2,15 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": []
+    "types": [],
+    "paths": {
+      "@alekart/angular-json-schema-form": [
+        "projects/angular6-json-schema-form/src/public_api.ts"
+      ],
+      "@alekart/angular-json-schema-form/*": [
+        "projects/angular6-json-schema-form/src/lib/*"
+      ]
+    }
   },
   "exclude": [
     "src/test.ts",
