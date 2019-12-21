@@ -17,7 +17,7 @@ import { RouterModule } from '@angular/router';
 
 // To include JsonSchemaFormModule after downloading from NPM, use this instead:
 //
-//   import { JsonSchemaFormModule, NoFrameworkModule } from 'angular6-json-schema-form';
+//   import { JsonSchemaFormModule, NoFrameworkModule } from '@alekart/angular-json-schema-form';
 //
 // but replace "NoFrameworkModule" with the framework you want to use,
 // then import both JsonSchemaFormModule and the framework module, like this:
@@ -32,7 +32,7 @@ import { routes } from './demo.routes';
 import {
   MaterialDesignFrameworkModule, Bootstrap4FrameworkModule,
   Bootstrap3FrameworkModule, NoFrameworkModule
-} from 'angular6-json-schema-form';
+} from '@alekart/angular-json-schema-form';
 
 @NgModule({
   declarations: [AceEditorDirective, DemoComponent, DemoRootComponent],
