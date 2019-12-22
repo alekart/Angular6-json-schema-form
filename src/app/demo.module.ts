@@ -12,6 +12,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { AceEditorDirective } from './ace-editor.directive';
+import { DemoComponent } from './demo.component';
+import { DemoRootComponent } from './demo-root.component';
+import { routes } from './demo.routes';
+import { NoFrameworkModule } from '@alekart/angular-json-schema-form';
+import { Bootstrap4FrameworkModule } from 'ajsf-bootstrap4-framework';
 
 // To include JsonSchemaFormModule after downloading from NPM, use this instead:
 //
@@ -22,13 +28,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 //
 //   imports: [ ... NoFrameworkModule, JsonSchemaFormModule.forRoot(NoFrameworkModule) ... ]
 
-import { AceEditorDirective } from './ace-editor.directive';
-import { DemoComponent } from './demo.component';
-import { DemoRootComponent } from './demo-root.component';
-
-import { routes } from './demo.routes';
-import {JsonSchemaFormModule, NoFrameworkModule} from '@alekart/angular-json-schema-form';
-
 @NgModule({
   declarations: [AceEditorDirective, DemoComponent, DemoRootComponent],
   imports: [
@@ -36,7 +35,7 @@ import {JsonSchemaFormModule, NoFrameworkModule} from '@alekart/angular-json-sch
     MatButtonModule, MatCardModule, MatCheckboxModule, FlexLayoutModule,
     MatIconModule, MatMenuModule, MatSelectModule, MatToolbarModule,
     RouterModule.forRoot(routes),
-    JsonSchemaFormModule,
+    Bootstrap4FrameworkModule,
     NoFrameworkModule
   ],
   bootstrap: [DemoRootComponent]
