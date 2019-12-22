@@ -27,6 +27,12 @@
       ],
       "@alekart/angular-json-schema-form/*": [
         "dist/angular-json-schema-form/*"
+      ],
+      "ajsf-bootstrap4-framework": [
+        "dist/ajsf-bootstrap4-framework"
+      ],
+      "ajsf-bootstrap4-framework/*": [
+        "dist/ajsf-bootstrap4-framework/*"
       ]
     }
   }
