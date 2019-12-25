@@ -1,6 +1,6 @@
 {
   "name": "@alekart/angular-json-schema-form-app",
-  "version": "8.0.0",
+  "version": "1.0.0",
   "author": "https://github.com/alekart/angular-json-schema-form/graphs/contributors",
   "description": "Angular JSON Schema Form builder Demo",
   "engines": {
