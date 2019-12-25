@@ -1,0 +1,28 @@
+name: Build
+# Build status workflow:
+# triggered on push or pull_request to master branch to test if projects build without errors
+on:
+   push:
+      paths:
+         - '**/*'
+         - '!*.txt'
+         - '!*.md'
+      branches:
+         - master
+   pull_request:
+      branches:
+         - master
+
+jobs:
+   build:
+      # This job runs on Linux
+      runs-on: ubuntu-18.04
+      name: Using Node 12
+      steps:
+         -  uses: actions/checkout@v1
+         -  uses: actions/setup-node@v1
+            with:
+               node-version: '12'
+         -  run: yarn install
+         # buildDemo task first builds the libraries
+         -  run: yarn buildDemo
