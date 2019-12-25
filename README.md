@@ -1,11 +1,8 @@
-# Angular6-json-schema-form
+# Angular-json-schema-form
 
-[![Build Status](https://travis-ci.org/hamzahamidi/Angular6-json-schema-form.svg?branch=master)](https://travis-ci.org/hamzahamidi/Angular6-json-schema-form)
-[![Maintainability](https://api.codeclimate.com/v1/badges/dfbee5b888425221bca6/maintainability)](https://codeclimate.com/github/hamzahamidi/Angular6-json-schema-form/maintainability)
-[![GitHub release](https://img.shields.io/github/release/hamzahamidi/angular6-json-schema-form.svg)](https://github.com/hamzahamidi/angular6-json-schema-form/releases/latest)
-[![npm downloads](https://img.shields.io/npm/dm/angular6-json-schema-form.svg?style=plastic)](https://www.npmjs.com/package/angular6-json-schema-form) [![GitHub MIT License](https://img.shields.io/github/license/hamzahamidi/angular6-json-schema-form.svg?style=social)](https://github.com/hamzahamidi/angular6-json-schema-form)
+<img src="https://github.com/alekart/angular-json-schema-form/workflows/Build/badge.svg" alt="Build Status"/>
 
-Note: This project is a continuation to [dschnelldavis/Angular2-json-schema-form](https://github.com/dschnelldavis/angular2-json-schema-form) & is and is not affiliated with any organization.
+Note: This project is a fork of [hamzahamidi/Angular6-json-schema-form](https://github.com/hamzahamidi/Angular6-json-schema-form).
 
 A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, and mostly API compatible with,
 
@@ -15,7 +12,7 @@ A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, an
 
 ## Check out the live demo and play with the examples
 
-[Check out some examples here.](https://hamidihamza.com/Angular6-json-schema-form)
+[Check out some examples here.](https://alekart.github.io/angular-json-schema-form/)
 
 This example playground features over 70 different JSON Schemas for you to try (including all examples used by each of the three libraries listed above), and the ability to quickly view any example formatted with Material Design, Bootstrap 3, Bootstrap 4, or without any formatting.
 
@@ -26,10 +23,9 @@ This example playground features over 70 different JSON Schemas for you to try (
 To install [the library and the example playground from GitHub](https://github.com/hamzahamidi/angular6-json-schema-form), clone `https://github.com/hamzahamidi/angular6-json-schema-form.git` with your favorite git program. Or, assuming you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Node/YARN](https://nodejs.org/en/download/) installed, enter the following in your terminal:
 
 ```shell
-git clone https://github.com/hamzahamidi/angular6-json-schema-form.git angular6-json-schema-form
-cd angular6-json-schema-form
+git clone https://github.com/alekart/angular-json-schema-form.git angular-json-schema-form
+cd angular-json-schema-form
 yarn install
-yarn buildlib
 yarn start
 ```
 
@@ -41,6 +37,9 @@ The source code is composed as the following:
 * `projects/json-schema-form/src/lib/framework-library` - framework library
 * `projects/json-schema-form/src/lib/widget-library` - widget library
 * `projects/json-schema-form/src/lib/shared` - various utilities and helper functions
+* `projects/ajsf-bootsrap3-framework` - Bootstrap 3 form framework
+* `projects/ajsf-bootsrap4-framework` - Bootstrap 4 form framework
+* `projects/ajsf-matarial-framework` - Material Design form framework
 * `src` - the demonstration playground example application
 * `src/assets/example-schemas` - JSON Schema examples used in the playground
 
@@ -51,42 +50,47 @@ If you want detailed documentation describing the individual functions used in t
 If, after playing with the examples, you decide this library is functional enough to use in your own project, you can [install it from NPM](https://www.npmjs.com/package/angular6-json-schema-form) using either [NPM](https://www.npmjs.com) or [Yarn](https://yarnpkg.com). To install with NPM, run the following from your terminal:
 
 ```shell
-npm install angular6-json-schema-form
+npm install @alekart/angular-json-schema-form
 ```
 
 With YARN, run the following:
 
 ```shell
-yarn add angular6-json-schema-form
+yarn add @alekart/angular-json-schema-form
 ```
 
-Then import `MaterialDesignFrameworkModule` in your main application module if you want to use `material-angular` UI, like this:
+This will install the form module with no-framework (plain HTML framework):
+- NoFrameworkModule — bundled plain HTML
+
+To use any of available frameworks you should install it separately:
+- `ajsf-bootstrap3-framework` (Bootstrap3FrameworkModule) — Bootstrap 3 
+- `ajsf-bootstrap4-framework` (Bootstrap4FrameworkModule) — Bootstrap 4
+- `ajsf-material-framework` (MaterialDesignFrameworkModule) - Material Design
+
+```shell
+yarn add ajsf-bootstrap4-framework
+``` 
+
+Then import `Bootstrap4FrameworkModule` in your main application module if you want to use `material-angular` UI, like this:
 
 ```javascript
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { MaterialDesignFrameworkModule } from 'angular6-json-schema-form';
+import { Bootstrap4FrameworkModule } from '@alekart/angular-json-schema-form';
 
 import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [ AppComponent ],
   imports: [
-    MaterialDesignFrameworkModule
+    Bootstrap4FrameworkModule
   ],
   providers: [],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
 ```
-
-Four framework modules are currently included, the import is the same as above :
-
-* MaterialDesignFrameworkModule — Material Design
-* Bootstrap3FrameworkModule — Bootstrap 3
-* Bootstrap4FrameworkModule — Bootstrap 4
-* NoFrameworkModule — plain HTML (for testing)
 
 It is also possible to load multiple frameworks and switch between them at runtime, like the example playground on GitHub. But most typical sites will just load one framework.
 
@@ -421,7 +425,7 @@ const yourNewWidgets = {
 ...or...
 
 ```javascript
-import { WidgetLibraryService } from 'angular6-json-schema-form';
+import { WidgetLibraryService } from '@alekart/angular-json-schema-form';
 ...
 constructor(private widgetLibrary: WidgetLibraryService) { }
 ...
@@ -434,6 +438,9 @@ widgetLibrary.registerWidget('custom-control', YourCustomWidgetComponent);
 To see many examples of widgets, explore the source code, or call `getAllWidgets()` from the `WidgetLibraryService` to see all widgets currently available in the library. All default widget components are in the `projects/json-schema-form/src/lib/widget-library` folder, and all custom Material Design widget components are in the `projects/json-schema-form/src/lib/framework-library/material-design-framework` folder. (The Bootstrap 3 and Bootstrap 4 frameworks just reformat the default widgets, and so do not include any custom widgets of their own.)
 
 ### Changing or adding frameworks
+
+_**NOTE:** This part was not updated to the new fork with separated frameworks, creating a framework might
+differ from the [hamzahamidi's](https://github.com/hamzahamidi/Angular6-json-schema-form) version_
 
 To change the active framework, either use the `framework` input of the `<json-schema-form>` tag, or load the `FrameworkLibraryService` and call `setFramework(yourCustomFramework)`, with either the name of an available framework ('bootstrap-3', 'bootstrap-4', 'material-design', or 'no-framework'), or with your own custom framework object, like so:
 
@@ -461,7 +468,7 @@ const yourCustomFramework = {
 ...or...
 
 ```javascript
-import { FrameworkLibraryService } from 'angular6-json-schema-form';
+import { FrameworkLibraryService } from '@alekart/angular-json-schema-form';
 ...
 constructor(private frameworkLibrary: FrameworkLibraryService) { }
 ...
