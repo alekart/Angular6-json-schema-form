@@ -64,7 +64,6 @@ export const ANGULAR_MATERIAL_MODULES = [
     ...MATERIAL_FRAMEWORK_COMPONENTS,
   ],
   exports: [
-    JsonSchemaFormModule,
     ...MATERIAL_FRAMEWORK_COMPONENTS,
   ],
   providers: [

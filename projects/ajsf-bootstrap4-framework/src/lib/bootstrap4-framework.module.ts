@@ -21,7 +21,6 @@ import {Bootstrap4FrameworkComponent} from './bootstrap4-framework.component';
     Bootstrap4FrameworkComponent,
   ],
   exports: [
-    JsonSchemaFormModule,
     Bootstrap4FrameworkComponent,
   ],
   providers: [
