@@ -21,7 +21,6 @@ import {Bootstrap3FrameworkComponent} from './bootstrap3-framework.component';
     Bootstrap3FrameworkComponent,
   ],
   exports: [
-    JsonSchemaFormModule,
     Bootstrap3FrameworkComponent,
   ],
   providers: [

@@ -16,7 +16,7 @@ import { AceEditorDirective } from './ace-editor.directive';
 import { DemoComponent } from './demo.component';
 import { DemoRootComponent } from './demo-root.component';
 import { routes } from './demo.routes';
-import { NoFrameworkModule } from '@alekart/angular-json-schema-form';
+import {JsonSchemaFormModule, NoFrameworkModule} from '@alekart/angular-json-schema-form';
 import { Bootstrap4FrameworkModule } from 'ajsf-bootstrap4-framework';
 import { Bootstrap3FrameworkModule } from 'ajsf-bootstrap3-framework';
 import { MaterialDesignFrameworkModule } from 'ajsf-material-framework';
@@ -37,6 +37,7 @@ import { MaterialDesignFrameworkModule } from 'ajsf-material-framework';
     MatButtonModule, MatCardModule, MatCheckboxModule, FlexLayoutModule,
     MatIconModule, MatMenuModule, MatSelectModule, MatToolbarModule,
     RouterModule.forRoot(routes),
+    JsonSchemaFormModule,
     Bootstrap4FrameworkModule,
     Bootstrap3FrameworkModule,
     MaterialDesignFrameworkModule,
