@@ -1,8 +1,17 @@
 {
   "name": "ajsf-material-framework",
   "version": "1.0.0",
-  "dependencies": {
+  "description": "Material Design framework for Angular JSON Schema Form builder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alekart/angular-json-schema-form"
   },
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "dependencies": {},
   "peerDependencies": {
     "@alekart/angular-json-schema-form": "^1.0.0",
     "@angular/material": "^7.3.2",
