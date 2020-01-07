@@ -13,9 +13,6 @@
     "form builder"
   ],
   "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "repository": {
     "type": "git",
     "url": "ssh://github.com/alekart/angular-json-schema-form.git",
@@ -35,7 +32,7 @@
     "postbuild-jsf": "cp README.md LICENSE  dist/angular-json-schema-form/",
     "buildDemo": "yarn build-libs && ng build --prod --base-href ./",
     "release": "run-p release:*",
-    "release:jsf": "cd ./dist/angular-json-schema-form && npm publish && cd -",
+    "release:jsf": "cd ./dist/angular-json-schema-form && npm publish --access public && cd -",
     "release:bs3": "cd ./dist/ajsf-bootstrap3-framework && npm publish && cd -",
     "release:bs4": "cd ./dist/ajsf-bootstrap4-framework && npm publish && cd -",
     "release:material": "cd ./dist/ajsf-material-framework && npm publish && cd -",
