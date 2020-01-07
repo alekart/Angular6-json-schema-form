@@ -1,6 +1,6 @@
 {
   "name": "ajsf-bootstrap4-framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Bootstrap 4 framework for Angular JSON Schema Form builder",
   "repository": {
     "type": "git",
