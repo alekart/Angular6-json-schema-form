@@ -1,10 +1,10 @@
-# Angular Json Schema Form
+# Angular JSON Schema Form
 
 <img src="https://github.com/alekart/ajsf/workflows/Build/badge.svg" alt="Build Status"/>
 
 Note: This project is a fork of [hamzahamidi/ajsf](https://github.com/hamzahamidi/ajsf).
 
-A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, and mostly API compatible with,
+A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, and mostly API compatible with:
 
 * [JSON Schema Form](https://github.com/json-schema-form)'s [Angular Schema Form](http://schemaform.io) for [AngularJS](https://angularjs.org) ([examples](http://schemaform.io/examples/bootstrap-example.html))
 * [Mozilla](https://blog.mozilla.org/services/)'s [React JSON Schema Form](https://github.com/mozilla-services/react-jsonschema-form) for [React](https://facebook.github.io/react/) ([examples](https://mozilla-services.github.io/react-jsonschema-form/)), and
@@ -33,21 +33,21 @@ This should start a server with the example playground, which you can view in yo
 
 The source code is composed as the following:
 
-* `projects/json-schema-form` - Angular JSON Schema Form main library
-* `projects/json-schema-form/src/lib/framework-library` - framework library
-* `projects/json-schema-form/src/lib/widget-library` - widget library
-* `projects/json-schema-form/src/lib/shared` - various utilities and helper functions
-* `projects/ajsf-bootsrap3-framework` - Bootstrap 3 form framework
-* `projects/ajsf-bootsrap4-framework` - Bootstrap 4 form framework
-* `projects/ajsf-matarial-framework` - Material Design form framework
-* `src` - the demonstration playground example application
-* `src/assets/example-schemas` - JSON Schema examples used in the playground
+* `projects/ajsf-core` - Angular JSON Schema Form main library
+* `projects/ajsf-bootstrap3` - Framework for Bootstrap 3
+* `projects/ajsf-bootstrap4` - Framework for Bootstrap 4
+* `projects/ajsf-material` - Framework for Angular Material
+* `projects/ajsf-core/src/lib/framework-library` - framework library
+* `projects/ajsf-core/src/lib/widget-library` - widget library
+* `projects/ajsf-core/src/lib/shared` - various utilities and helper functions
+* `demo` - the demonstration playground example application
+* `demo/assets/example-schemas` - JSON Schema examples used in the playground
 
 If you want detailed documentation describing the individual functions used in this library, run `npm run docs` to generate TypeDoc documentation, and then look in the generated `/docs/api` folder. (Angular JSON Schema Form is still a work in progress, so right now this documentation varies from highly detailed to completely missing.)
 
 ### To install from NPM/YARN and use in your own project
 
-If, after playing with the examples, you decide this library is functional enough to use in your own project, you can [install it from NPM](https://www.npmjs.com/package/ajsf) using either [NPM](https://www.npmjs.com) or [Yarn](https://yarnpkg.com). To install with NPM, run the following from your terminal:
+If, after playing with the examples, you decide this library is functional enough to use in your own project, you can for example [install @ajsf/material package from NPM](https://www.npmjs.com/package/angular6-json-schema-form) using either [NPM](https://www.npmjs.com) or [Yarn](https://yarnpkg.com). To install with NPM, run the following from your terminal:
 
 ```shell
 npm install @alekart/ajsf-core
@@ -92,6 +92,13 @@ import { AppComponent } from './app.component';
 export class AppModule { }
 ```
 
+Four framework modules are currently included, the import is the same as above :
+
+* MaterialDesignFrameworkModule — Material Design
+* Bootstrap3FrameworkModule — Bootstrap 3
+* Bootstrap4FrameworkModule — Bootstrap 4
+* NoFrameworkModule — plain HTML (for testing)
+
 It is also possible to load multiple frameworks and switch between them at runtime, like the example playground on GitHub. But most typical sites will just load one framework.
 
 ## Using Angular JSON Schema Form
@@ -109,7 +116,7 @@ For basic use, after loading JsonSchemaFormModule as described above, to display
 </json-schema-form>
 ```
 
-Where `schema` is a valid JSON schema object, and `onSubmit` calls a function to process the submitted JSON form data. If you don't already have your own schemas, you can find a bunch of samples to test with in the `src/demo/assets/example-schemas` folder, as described above.
+Where `schema` is a valid JSON schema object, and `onSubmit` calls a function to process the submitted JSON form data. If you don't already have your own schemas, you can find a bunch of samples to test with in the `demo/assets/example-schemas` folder, as described above.
 
 `framework` is for the template you want to use, the default value is `no-framwork`. The possible values are:
 
@@ -438,9 +445,6 @@ widgetLibrary.registerWidget('custom-control', YourCustomWidgetComponent);
 To see many examples of widgets, explore the source code, or call `getAllWidgets()` from the `WidgetLibraryService` to see all widgets currently available in the library. All default widget components are in the `projects/json-schema-form/src/lib/widget-library` folder, and all custom Material Design widget components are in the `projects/json-schema-form/src/lib/framework-library/material-design-framework` folder. (The Bootstrap 3 and Bootstrap 4 frameworks just reformat the default widgets, and so do not include any custom widgets of their own.)
 
 ### Changing or adding frameworks
-
-_**NOTE:** This part was not updated to the new fork with separated frameworks, creating a framework might
-differ from the [hamzahamidi's](https://github.com/hamzahamidi/ajsf) version_
 
 To change the active framework, either use the `framework` input of the `<json-schema-form>` tag, or load the `FrameworkLibraryService` and call `setFramework(yourCustomFramework)`, with either the name of an available framework ('bootstrap-3', 'bootstrap-4', 'material-design', or 'no-framework'), or with your own custom framework object, like so:
 
