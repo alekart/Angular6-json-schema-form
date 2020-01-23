@@ -6,6 +6,7 @@ export * from './lib/json-schema-form.module';
 export * from './lib/json-schema-form.service';
 export * from './lib/json-schema-form.component';
 export * from './lib/framework-library/public_api';
+export * from './lib/locale';
 export * from './lib/widget-library';
 export * from './lib/widget-library/widget-library.module';
 export * from './lib/shared';
