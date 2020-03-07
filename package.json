@@ -42,7 +42,10 @@
     "pack-lib:bs4": "cd ./dist/bootstrap4 && npm pack && cd -",
     "pack-lib:material": "cd ./dist/material && npm pack && cd -",
     "bump-version": "node ./scripts/bump-version.js",
-    "test": "ng test",
+    "test:core": "ng test ajsf-core",
+    "test:bs3": "ng test ajsf-bootstrap3",
+    "test:bs4": "ng test ajsf-bootstrap4",
+    "test:material": "ng test ajsf-material",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
