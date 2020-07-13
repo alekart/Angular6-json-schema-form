@@ -30,7 +30,8 @@
     ],
     "paths": {
       "angular6-json-schema-form": [
-        "dist/angular6-json-schema-form"
+        "dist/angular6-json-schema-form",
+        "projects/angular6-json-schema-form/src/public_api.ts"
       ],
       "angular6-json-schema-form/*": [
         "dist/angular6-json-schema-form/*"

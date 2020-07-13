@@ -1,4 +1,16 @@
-# Angular6-json-schema-form
+### What's legacy versions
+
+The legacy versions will mostly be based on the original released versions but with add some fixes/modifications.
+The version will be noted differently but still reflect original version format: 
+- 7.3.0 => 0.7.3-legacy.0 
+- 7.3.1 => 0.7.3-legacy.1
+- 8.0.0 => 0.8.0-legacy.0
+
+**Main reason of those legacy versions:**
+The original project has migrated the to lodash-es modules since 7.1.0 version which is very inconvenient
+for projects that already uses standard lodash or lodash/fp and adds a "duplicated" dependency. 
+
+# Angular6-json-schema-form (FORK)
 
 [![Build Status](https://travis-ci.org/hamzahamidi/Angular6-json-schema-form.svg?branch=master)](https://travis-ci.org/hamzahamidi/Angular6-json-schema-form)
 [![Maintainability](https://api.codeclimate.com/v1/badges/dfbee5b888425221bca6/maintainability)](https://codeclimate.com/github/hamzahamidi/Angular6-json-schema-form/maintainability)
