@@ -5,6 +5,7 @@
 /dist-server
 /tmp
 /out-tsc
+/snapshots
 
 # dependencies
 node_modules

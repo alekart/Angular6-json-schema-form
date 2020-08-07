@@ -30,6 +30,7 @@
     "build-libs": "yarn build-core && yarn build-bs4 && yarn build-bs3 && yarn build-material",
     "postbuild-core": "cp README.md LICENSE  dist/core/",
     "buildDemo": "yarn build-libs && ng build --prod --base-href ./",
+    "build-snapshot": "run-s set-snap-version build-libs pack-libs && rm -rf ./snapshots || : && mkdir snapshots || : && cp $(find ./dist/ -name '*.tgz') ./snapshots/",
     "release": "run-p release:*",
     "release:jsf": "cd ./dist/core && npm publish --access public && cd -",
     "release:bs3": "cd ./dist/bootstrap3 && npm publish && cd -",
@@ -41,6 +42,7 @@
     "pack-lib:bs4": "cd ./dist/bootstrap4 && npm pack && cd -",
     "pack-lib:material": "cd ./dist/material && npm pack && cd -",
     "bump-version": "node ./scripts/bump-version.js",
+    "set-snap-version": "run-s 'bump-version snap,date,hash -- --nocommit'",
     "test:core": "ng test ajsf-core",
     "test:bs3": "ng test ajsf-bootstrap3",
     "test:bs4": "ng test ajsf-bootstrap4",
@@ -92,6 +94,7 @@
     "tsickle": "^0.35.0",
     "tslib": "^1.9.0",
     "tslint": "~5.18.0",
-    "typescript": "~3.4.3"
+    "typescript": "~3.4.3",
+    "yargs": "^15.4.1"
   }
 }
