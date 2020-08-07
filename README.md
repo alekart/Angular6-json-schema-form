@@ -1,8 +1,8 @@
-# Angular-json-schema-form
+# Angular Json Schema Form
 
-<img src="https://github.com/alekart/angular-json-schema-form/workflows/Build/badge.svg" alt="Build Status"/>
+<img src="https://github.com/alekart/ajsf/workflows/Build/badge.svg" alt="Build Status"/>
 
-Note: This project is a fork of [hamzahamidi/Angular6-json-schema-form](https://github.com/hamzahamidi/Angular6-json-schema-form).
+Note: This project is a fork of [hamzahamidi/ajsf](https://github.com/hamzahamidi/ajsf).
 
 A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, and mostly API compatible with,
 
@@ -12,7 +12,7 @@ A [JSON Schema](http://json-schema.org) Form builder for Angular, similar to, an
 
 ## Check out the live demo and play with the examples
 
-[Check out some examples here.](https://alekart.github.io/angular-json-schema-form/)
+[Check out some examples here.](https://alekart.github.io/ajsf/)
 
 This example playground features over 70 different JSON Schemas for you to try (including all examples used by each of the three libraries listed above), and the ability to quickly view any example formatted with Material Design, Bootstrap 3, Bootstrap 4, or without any formatting.
 
@@ -20,10 +20,10 @@ This example playground features over 70 different JSON Schemas for you to try (
 
 ### To install from GitHub
 
-To install [the library and the example playground from GitHub](https://github.com/hamzahamidi/angular6-json-schema-form), clone `https://github.com/hamzahamidi/angular6-json-schema-form.git` with your favorite git program. Or, assuming you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Node/YARN](https://nodejs.org/en/download/) installed, enter the following in your terminal:
+To install [the library and the example playground from GitHub](https://github.com/hamzahamidi/ajsf), clone `https://github.com/hamzahamidi/ajsf.git` with your favorite git program. Or, assuming you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Node/YARN](https://nodejs.org/en/download/) installed, enter the following in your terminal:
 
 ```shell
-git clone https://github.com/alekart/angular-json-schema-form.git angular-json-schema-form
+git clone https://github.com/alekart/ajsf.git angular-json-schema-form
 cd angular-json-schema-form
 yarn install
 yarn start
@@ -47,28 +47,28 @@ If you want detailed documentation describing the individual functions used in t
 
 ### To install from NPM/YARN and use in your own project
 
-If, after playing with the examples, you decide this library is functional enough to use in your own project, you can [install it from NPM](https://www.npmjs.com/package/angular6-json-schema-form) using either [NPM](https://www.npmjs.com) or [Yarn](https://yarnpkg.com). To install with NPM, run the following from your terminal:
+If, after playing with the examples, you decide this library is functional enough to use in your own project, you can [install it from NPM](https://www.npmjs.com/package/ajsf) using either [NPM](https://www.npmjs.com) or [Yarn](https://yarnpkg.com). To install with NPM, run the following from your terminal:
 
 ```shell
-npm install @alekart/angular-json-schema-form
+npm install @alekart/ajsf-core
 ```
 
 With YARN, run the following:
 
 ```shell
-yarn add @alekart/angular-json-schema-form
+yarn add @alekart/ajsf-core
 ```
 
 This will install the form module with no-framework (plain HTML framework):
 - NoFrameworkModule — bundled plain HTML
 
 To use any of available frameworks you should install it separately:
-- `ajsf-bootstrap3-framework` (Bootstrap3FrameworkModule) — Bootstrap 3 
-- `ajsf-bootstrap4-framework` (Bootstrap4FrameworkModule) — Bootstrap 4
-- `ajsf-material-framework` (MaterialDesignFrameworkModule) - Material Design
+- `@alekart/ajsf-bootstrap3` (Bootstrap3FrameworkModule) — Bootstrap 3 
+- `@alekart/ajsf-bootstrap4` (Bootstrap4FrameworkModule) — Bootstrap 4
+- `@alekart/ajsf-material` (MaterialDesignFrameworkModule) - Material Design
 
 ```shell
-yarn add ajsf-bootstrap4-framework
+yarn add @alekart/ajsf-bootstrap4
 ``` 
 
 Then import `Bootstrap4FrameworkModule` in your main application module if you want to use `material-angular` UI, like this:
@@ -77,7 +77,7 @@ Then import `Bootstrap4FrameworkModule` in your main application module if you w
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { Bootstrap4FrameworkModule } from '@alekart/angular-json-schema-form';
+import { Bootstrap4FrameworkModule } from '@alekart/ajsf-core';
 
 import { AppComponent } from './app.component';
 
@@ -425,7 +425,7 @@ const yourNewWidgets = {
 ...or...
 
 ```javascript
-import { WidgetLibraryService } from '@alekart/angular-json-schema-form';
+import { WidgetLibraryService } from '@alekart/ajsf-core';
 ...
 constructor(private widgetLibrary: WidgetLibraryService) { }
 ...
@@ -440,7 +440,7 @@ To see many examples of widgets, explore the source code, or call `getAllWidgets
 ### Changing or adding frameworks
 
 _**NOTE:** This part was not updated to the new fork with separated frameworks, creating a framework might
-differ from the [hamzahamidi's](https://github.com/hamzahamidi/Angular6-json-schema-form) version_
+differ from the [hamzahamidi's](https://github.com/hamzahamidi/ajsf) version_
 
 To change the active framework, either use the `framework` input of the `<json-schema-form>` tag, or load the `FrameworkLibraryService` and call `setFramework(yourCustomFramework)`, with either the name of an available framework ('bootstrap-3', 'bootstrap-4', 'material-design', or 'no-framework'), or with your own custom framework object, like so:
 
@@ -468,7 +468,7 @@ const yourCustomFramework = {
 ...or...
 
 ```javascript
-import { FrameworkLibraryService } from '@alekart/angular-json-schema-form';
+import { FrameworkLibraryService } from '@alekart/ajsf-core';
 ...
 constructor(private frameworkLibrary: FrameworkLibraryService) { }
 ...

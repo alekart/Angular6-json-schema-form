@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../out-tsc/lib",
+    "target": "es2015",
+    "types": []
+  },
+  "exclude": [
+    "src/test.ts",
+    "**/*.spec.ts",
+    "**/*.spec.disabled.ts"
+  ],
+  "baseUrl": "./",
+  "paths": {
+    "@alekart/ajsf-core": [
+      "../ajsf-core/src/public_api.ts"
+    ],
+    "@alekart/ajsf-core/*": [
+      "../ajsf-core/src/lib/*"
+    ]
+  }
+}
