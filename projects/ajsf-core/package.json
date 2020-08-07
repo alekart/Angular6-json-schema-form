@@ -1,0 +1,33 @@
+{
+  "name": "@alekart/ajsf-core",
+  "version": "1.0.1",
+  "description": "Angular JSON Schema Form builder",
+  "author": "https://github.com/alekart/ajsf/graphs/contributors",
+  "keywords": [
+    "Angular",
+    "JSON Schema",
+    "form builder"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alekart/ajsf"
+  },
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/alekart/ajsf/issues"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=6.0.0",
+    "@angular/core": ">=6.0.0",
+    "@angular/forms": ">=6.0.0",
+    "@angular/platform-browser": ">=6.0.0",
+    "rxjs": ">=6.0.0",
+    "ajv": "^6.0.1",
+    "lodash": "^4.17.11"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/core",
+  "lib": {
+    "entryFile": "src/public_api.ts",
+    "umdModuleIds": {
+      "lodash/isEqual": "lodash",
+      "lodash/cloneDeep": "lodash",
+      "lodash/filter": "lodash",
+      "lodash/map": "lodash",
+      "lodash/uniqueId": "lodash",
+      "ajv": "ajv",
+      "ajv/lib/refs/json-schema-draft-06.json": "jsonDraft6"
+    }
+  }
+}

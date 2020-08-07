@@ -4,28 +4,28 @@
     "outDir": "../out-tsc/app",
     "types": [],
     "paths": {
-      "@alekart/angular-json-schema-form": [
-        "projects/angular6-json-schema-form/src/public_api.ts"
+      "@alekart/ajsf-core": [
+        "projects/ajsf-core/src/public_api.ts"
       ],
-      "@alekart/angular-json-schema-form/*": [
-        "projects/angular6-json-schema-form/src/lib/*"
+      "@alekart/ajsf-core/*": [
+        "projects/ajsf-core/src/lib/*"
       ],
-      "ajsf-bootstrap4-framework": [
-        "projects/ajsf-bootstrap4-framework/src/public_api.ts"
+      "@alekart/ajsf-bootstrap4": [
+        "projects/ajsf-bootstrap4/src/public_api.ts"
       ],
-      "ajsf-bootstrap4-framework/*": [
-        "projects/ajsf-bootstrap4-framework/src/lib/*"
+      "@alekart/ajsf-bootstrap4/*": [
+        "projects/ajsf-bootstrap4/src/lib/*"
       ],
-      "ajsf-bootstrap3-framework": [
-        "projects/ajsf-bootstrap3-framework/src/public_api.ts"
+      "@alekart/ajsf-bootstrap3": [
+        "projects/ajsf-bootstrap3/src/public_api.ts"
       ],
-      "ajsf-bootstrap3-framework/*": [
-        "projects/ajsf-bootstrap3-framework/src/lib/*"
+      "@alekart/ajsf-bootstrap3/*": [
+        "projects/ajsf-bootstrap3/src/lib/*"
       ],
-      "ajsf-material-framework": [
-        "projects/ajsf-material-framework/src/public_api.ts"
+      "@alekart/ajsf-material": [
+        "projects/ajsf-material/src/public_api.ts"
       ],
-      "ajsf-material-framework/*": [
+      "@alekart/ajsf-material/*": [
         "projects/ajsf-material-framework/src/lib/*"
       ]
     }

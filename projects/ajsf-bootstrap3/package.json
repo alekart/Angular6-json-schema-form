@@ -1,0 +1,19 @@
+{
+  "name": "@alekart/ajsf-bootstrap3",
+  "version": "1.0.1",
+  "description": "Bootstrap 3 framework for Angular JSON Schema Form builder",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alekart/ajsf"
+  },
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=6.1.10",
+    "@angular/core": ">=6.1.10",
+    "@alekart/ajsf-core": "^1.0.0"
+  }
+}
