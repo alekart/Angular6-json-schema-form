@@ -78,7 +78,7 @@ export class DemoComponent implements OnInit {
     printMargin: false,
     autoScrollEditorIntoView: true,
   };
-  @ViewChild(MatMenuTrigger, {static: true}) menuTrigger: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
 
   constructor(
     private http: HttpClient,
