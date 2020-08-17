@@ -1,6 +1,6 @@
 {
   "name": "@alekart/ajsf-demo",
-  "version": "1.0.0-snapshot-0807-efc762a5",
+  "version": "1.1.0",
   "author": "https://github.com/alekart/ajsf/graphs/contributors",
   "description": "Angular JSON Schema Form builder Demo",
   "engines": {
