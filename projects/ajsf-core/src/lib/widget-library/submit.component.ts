@@ -1,7 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
-import { hasOwn } from '../shared/utility.functions';
 import { JsonSchemaFormService } from '../json-schema-form.service';
+import { has } from 'lodash';
 
 
 @Component({
@@ -41,7 +41,7 @@ export class SubmitComponent implements OnInit {
   ngOnInit() {
     this.options = this.layoutNode.options || {};
     this.jsf.initializeControl(this);
-    if (hasOwn(this.options, 'disabled')) {
+    if (has(this.options, 'disabled')) {
       this.controlDisabled = this.options.disabled;
     } else if (this.jsf.formOptions.disableInvalidSubmit) {
       this.controlDisabled = !this.jsf.isValid;

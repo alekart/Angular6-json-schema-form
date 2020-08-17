@@ -1,6 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
-import { JsonSchemaFormService, hasOwn } from '@alekart/ajsf-core';
+import { JsonSchemaFormService } from '@alekart/ajsf-core';
+import { has } from 'lodash';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -41,7 +42,7 @@ export class MaterialButtonComponent implements OnInit {
   ngOnInit() {
     this.options = this.layoutNode.options || {};
     this.jsf.initializeControl(this);
-    if (hasOwn(this.options, 'disabled')) {
+    if (has(this.options, 'disabled')) {
       this.controlDisabled = this.options.disabled;
     } else if (this.jsf.formOptions.disableInvalidSubmit) {
       this.controlDisabled = !this.jsf.isValid;

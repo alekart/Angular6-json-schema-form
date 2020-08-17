@@ -3,15 +3,14 @@
 
 export {
   _executeValidators, _executeAsyncValidators, _mergeObjects, _mergeErrors,
-  isDefined, hasValue, isEmpty, isString, isNumber, isInteger, isBoolean,
-  isFunction, isObject, isArray, isDate, isMap, isSet, isPromise, isObservable,
-  getType, isType, isPrimitive, toJavaScriptType, toSchemaType, _toPromise,
+  isDefined, hasValue, isPromise, isObservable,
+  getType, isType, isPrimitive, toJavaScriptType, toSchemaType,
   toObservable, inArray, xor, SchemaPrimitiveType, SchemaType, JavaScriptPrimitiveType,
   JavaScriptType, PrimitiveValue, PlainObject, IValidatorFn, AsyncIValidatorFn
 } from './validator.functions';
 
 export {
-  addClasses, copy, forEach, forEachCopy, hasOwn, mergeFilteredObject,
+  addClasses, copy, forEachRecursive, forEachCopy, mergeFilteredObject,
   uniqueItems, commonItems, fixTitle, toTitleCase
 } from './utility.functions';
 

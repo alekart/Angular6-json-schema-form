@@ -1,17 +1,24 @@
 {
-    "extends": "../../tslint.json",
-    "rules": {
-        "directive-selector": [
-            true,
-            "attribute",
-            "lib",
-            "camelCase"
-        ],
-        "component-selector": [
-            true,
-            "element",
-            "lib",
-            "kebab-case"
-        ]
-    }
+  "extends": "../../tslint.json",
+  "rules": {
+    "directive-selector": [
+      true,
+      "attribute",
+      "lib",
+      "camelCase"
+    ],
+    "component-selector": [
+      true,
+      "element",
+      "lib",
+      "kebab-case"
+    ],
+    "import-blacklist": [
+      true,
+      "@alekart/ajsf-core",
+      "@alekart/ajsf-bootstrap3",
+      "@alekart/ajsf-bootstrap4",
+      "@alekart/ajsf-material"
+    ]
+  }
 }

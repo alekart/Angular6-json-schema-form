@@ -1,38 +1,41 @@
-import { Injectable } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
-import cloneDeep from 'lodash/cloneDeep';
+import {Injectable} from '@angular/core';
+import {AbstractControl, FormArray, FormGroup} from '@angular/forms';
 import Ajv from 'ajv';
 import jsonDraft6 from 'ajv/lib/refs/json-schema-draft-06.json';
+import {Subject} from 'rxjs';
+import {ErrorMessages, FormOptionsInterface, WidgetInterface} from './interfaces';
 import {
-  buildFormGroup,
-  buildFormGroupTemplate,
-  formatFormData,
-  getControl,
-  fixTitle,
-  forEach,
-  hasOwn,
-  toTitleCase,
-  buildLayout,
-  getLayoutNode,
-  buildSchemaFromData,
-  buildSchemaFromLayout,
-  removeRecursiveReferences,
-  hasValue,
-  isArray,
-  isDefined,
-  isEmpty,
-  isObject,
-  JsonPointer
-} from './shared';
-import {
+  deValidationMessages,
   enValidationMessages,
   frValidationMessages,
   itValidationMessages,
   ptValidationMessages,
   zhValidationMessages,
-  deValidationMessages,
 } from './locale';
+import {
+  buildFormGroup,
+  buildFormGroupTemplate,
+  buildLayout,
+  buildSchemaFromData,
+  buildSchemaFromLayout,
+  fixTitle,
+  formatFormData,
+  getControl,
+  getLayoutNode,
+  hasValue,
+  isDefined,
+  JsonPointer,
+  removeRecursiveReferences,
+  toTitleCase
+} from './shared';
+import {
+  forEach,
+  has,
+  isArray,
+  isEmpty,
+  isObject,
+  cloneDeep
+} from 'lodash';
 
 
 export interface TitleMapItem {
@@ -41,12 +44,6 @@ export interface TitleMapItem {
   checked?: boolean;
   group?: string;
   items?: TitleMapItem[];
-}
-export interface ErrorMessages {
-  [control_name: string]: {
-    message: string | Function | Object;
-    code: string;
-  }[];
 }
 
 @Injectable({
@@ -58,12 +55,12 @@ export class JsonSchemaFormService {
   AngularSchemaFormCompatibility = false;
   tpldata: any = {};
 
-  ajvOptions: any = {
+  ajvOptions: Ajv.Options = {
     allErrors: true,
     jsonPointers: true,
-    unknownFormats: 'ignore'
+    unknownFormats: 'ignore',
   };
-  ajv: any = new Ajv(this.ajvOptions); // AJV: Another JSON Schema Validator
+  ajv: Ajv.Ajv = new Ajv(this.ajvOptions); // AJV: Another JSON Schema Validator
   validateFormData: any = null; // Compiled AJV function to validate active form's schema
 
   formValues: any = {}; // Internal form data (may not have correct types)
@@ -71,15 +68,14 @@ export class JsonSchemaFormService {
   schema: any = {}; // Internal JSON Schema
   layout: any[] = []; // Internal form layout
   formGroupTemplate: any = {}; // Template used to create formGroup
-  formGroup: any = null; // Angular formGroup, which powers the reactive form
+  formGroup: FormGroup = null; // Angular formGroup, which powers the reactive form
   framework: any = null; // Active framework component
-  formOptions: any; // Active options, used to configure the form
+  formOptions: FormOptionsInterface; // Active options, used to configure the form
 
   validData: any = null; // Valid form data (or null) (=== isValid ? data : null)
   isValid: boolean = null; // Is current form data valid?
-  ajvErrors: any = null; // Ajv errors for current data
+  ajvErrors: Ajv.ErrorObject[] = null; // Ajv errors for current data
   validationErrors: any = null; // Any validation errors for current data
-  dataErrors: any = new Map(); //
   formValueSubscription: any = null; // Subscription to formGroup.valueChanges observable (for un- and re-subscribing)
   dataChanges: Subject<any> = new Subject(); // Form data observable
   isValidChanges: Subject<any> = new Subject(); // isValid observable
@@ -90,57 +86,49 @@ export class JsonSchemaFormService {
   dataRecursiveRefMap: Map<string, string> = new Map(); // Maps recursive reference points in form data
   schemaRecursiveRefMap: Map<string, string> = new Map(); // Maps recursive reference points in schema
   schemaRefLibrary: any = {}; // Library of schemas for resolving schema $refs
-  layoutRefLibrary: any = { '': null }; // Library of layout nodes for adding to form
+  layoutRefLibrary: any = {'': null}; // Library of layout nodes for adding to form
   templateRefLibrary: any = {}; // Library of formGroup templates for adding to form
   hasRootReference = false; // Does the form include a recursive reference to itself?
 
   language = 'en-US'; // Does the form include a recursive reference to itself?
 
+  /**
+   * Indicates if the form was submitted or not whatever regardless its status.
+   * Becomes true on first submit action.
+   */
+  isSubmitted = false;
+
   // Default global form options
-  defaultFormOptions: any = {
-    autocomplete: true, // Allow the web browser to remember previous form submission values as defaults
-    addSubmit: 'auto', // Add a submit button if layout does not have one?
-    // for addSubmit: true = always, false = never,
-    // 'auto' = only if layout is undefined (form is built from schema alone)
-    debug: false, // Show debugging output?
-    disableInvalidSubmit: true, // Disable submit if form invalid?
-    formDisabled: false, // Set entire form as disabled? (not editable, and disables outputs)
-    formReadonly: false, // Set entire form as read only? (not editable, but outputs still enabled)
-    fieldsRequired: false, // (set automatically) Are there any required fields in the form?
-    framework: 'no-framework', // The framework to load
-    loadExternalAssets: false, // Load external css and JavaScript for framework?
-    pristine: { errors: true, success: true },
+  defaultFormOptions: FormOptionsInterface = {
+    autocomplete: true,
+    addSubmit: 'auto',
+    debug: false,
+    disableInvalidSubmit: true,
+    formDisabled: false,
+    formReadonly: false,
+    fieldsRequired: false,
+    framework: 'no-framework',
+    loadExternalAssets: false,
+    pristine: {errors: true, success: true},
     supressPropertyTitles: false,
-    setSchemaDefaults: 'auto', // Set fefault values from schema?
-    // true = always set (unless overridden by layout default or formValues)
-    // false = never set
-    // 'auto' = set in addable components, and everywhere if formValues not set
-    setLayoutDefaults: 'auto', // Set fefault values from layout?
-    // true = always set (unless overridden by formValues)
-    // false = never set
-    // 'auto' = set in addable components, and everywhere if formValues not set
-    validateOnRender: 'auto', // Validate fields immediately, before they are touched?
-    // true = validate all fields immediately
-    // false = only validate fields after they are touched by user
-    // 'auto' = validate fields with values immediately, empty fields after they are touched
-    widgets: {}, // Any custom widgets to load
+    setSchemaDefaults: 'auto',
+    setLayoutDefaults: 'auto',
+    returnEmptyFields: true,
+    validateOnRender: 'auto',
+    widgets: {},
     defautWidgetOptions: {
-      // Default options for form control widgets
-      listItems: 1, // Number of list items to initially add to arrays with no default value
-      addable: true, // Allow adding items to an array or $ref point?
-      orderable: true, // Allow reordering items within an array?
-      removable: true, // Allow removing items from an array or $ref point?
-      enableErrorState: true, // Apply 'has-error' class when field fails validation?
-      // disableErrorState: false, // Don't apply 'has-error' class when field fails validation?
-      enableSuccessState: true, // Apply 'has-success' class when field validates?
-      // disableSuccessState: false, // Don't apply 'has-success' class when field validates?
-      feedback: false, // Show inline feedback icons?
-      feedbackOnRender: false, // Show errorMessage on Render?
-      notitle: false, // Hide title?
-      disabled: false, // Set control as disabled? (not editable, and excluded from output)
-      readonly: false, // Set control as read only? (not editable, but included in output)
-      returnEmptyFields: true, // return values for fields that contain no data?
-      validationMessages: {} // set by setLanguage()
+      listItems: 1,
+      addable: true,
+      orderable: true,
+      removable: true,
+      enableErrorState: true,
+      enableSuccessState: true,
+      feedback: false,
+      feedbackOnRender: false,
+      notitle: false,
+      disabled: false,
+      readonly: false,
+      validationMessages: {}
     }
   };
 
@@ -223,16 +211,17 @@ export class JsonSchemaFormService {
    *     code: 'at_symbol'
    *   } ]
    * }
-   * //{ErrorMessages} errors
    */
   buildRemoteError(errors: ErrorMessages) {
-    forEach(errors, (value, key) => {
-      if (key in this.formGroup.controls) {
-        for (const error of value) {
-          const err = {};
-          err[error['code']] = error['message'];
-          this.formGroup.get(key).setErrors(err, { emitEvent: true });
-        }
+    forEach(errors, (value, key: string) => {
+      const control: AbstractControl = this.formGroup.get(key);
+      if (!control) {
+        return;
+      }
+      for (const error of value) {
+        const err = {};
+        err[error.code] = error.message;
+        control.setErrors(err, {emitEvent: true});
       }
     });
   }
@@ -295,9 +284,9 @@ export class JsonSchemaFormService {
     this.layout = buildLayout(this, widgetLibrary);
   }
 
-  setOptions(newOptions: any) {
+  setOptions(newOptions: Partial<FormOptionsInterface>) {
     if (isObject(newOptions)) {
-      const addOptions = cloneDeep(newOptions);
+      const addOptions: Partial<FormOptionsInterface> = cloneDeep(newOptions);
       // Backward compatibility for 'defaultOptions' (renamed 'defautWidgetOptions')
       if (isObject(addOptions.defaultOptions)) {
         Object.assign(
@@ -318,11 +307,11 @@ export class JsonSchemaFormService {
       // convert disableErrorState / disableSuccessState to enable...
       const globalDefaults = this.formOptions.defautWidgetOptions;
       ['ErrorState', 'SuccessState']
-        .filter(suffix => hasOwn(globalDefaults, 'disable' + suffix))
+        .filter(suffix => has(globalDefaults, 'disable' + suffix))
         .forEach(suffix => {
           globalDefaults['enable' + suffix] = !globalDefaults[
-            'disable' + suffix
-          ];
+          'disable' + suffix
+            ];
           delete globalDefaults['disable' + suffix];
         });
     }
@@ -385,7 +374,7 @@ export class JsonSchemaFormService {
     const index = typeof key === 'number' ? key + 1 + '' : key || '';
     expression = expression.trim();
     if (
-      (expression[0] === "'" || expression[0] === '"') &&
+      (expression[0] === '\'' || expression[0] === '"') &&
       expression[0] === expression[expression.length - 1] &&
       expression.slice(1, expression.length - 1).indexOf(expression[0]) === -1
     ) {
@@ -394,11 +383,11 @@ export class JsonSchemaFormService {
     if (expression === 'idx' || expression === '$index') {
       return index;
     }
-    if (expression === 'value' && !hasOwn(values, 'value')) {
+    if (expression === 'value' && !has(values, 'value')) {
       return value;
     }
     if (
-      ['"', "'", ' ', '||', '&&', '+'].every(
+      ['"', '\'', ' ', '||', '&&', '+'].every(
         delim => expression.indexOf(delim) === -1
       )
     ) {
@@ -489,7 +478,7 @@ export class JsonSchemaFormService {
       : this.parseText(
         ctx.options.title || toTitleCase(ctx.layoutNode.name),
         this.getFormControlValue(this),
-        (this.getFormControlGroup(this) || <any>{}).value,
+        (this.getFormControlGroup(this as any) || <any>{}).value,
         ctx.dataIndex[ctx.dataIndex.length - 1]
       );
   }
@@ -506,7 +495,7 @@ export class JsonSchemaFormService {
         pointer = JsonPointer.parseObjectPath(pointer);
         result = !!JsonPointer.get(this.data, pointer);
         if (!result && pointer[0] === 'model') {
-          result = !!JsonPointer.get({ model: this.data }, pointer);
+          result = !!JsonPointer.get({model: this.data}, pointer);
         }
       } else if (typeof layoutNode.options.condition === 'function') {
         result = layoutNode.options.condition(this.data);
@@ -532,12 +521,13 @@ export class JsonSchemaFormService {
     return result;
   }
 
-  initializeControl(ctx: any, bind = true): boolean {
+  initializeControl(ctx: WidgetInterface, bind = true): boolean {
+    console.log('ctx', ctx);
     if (!isObject(ctx)) {
       return false;
     }
     if (isEmpty(ctx.options)) {
-      ctx.options = !isEmpty((ctx.layoutNode || {}).options)
+      ctx.options = !isEmpty(ctx.layoutNode.options)
         ? ctx.layoutNode.options
         : cloneDeep(this.formOptions);
     }
@@ -551,8 +541,8 @@ export class JsonSchemaFormService {
         ctx.formControl.status === 'VALID'
           ? null
           : this.formatErrors(
-            ctx.formControl.errors,
-            ctx.options.validationMessages
+          ctx.formControl.errors,
+          ctx.options.validationMessages
           );
       ctx.options.showErrors =
         this.formOptions.validateOnRender === true ||
@@ -564,8 +554,8 @@ export class JsonSchemaFormService {
             status === 'VALID'
               ? null
               : this.formatErrors(
-                ctx.formControl.errors,
-                ctx.options.validationMessages
+              ctx.formControl.errors,
+              ctx.options.validationMessages
               ))
       );
       ctx.formControl.valueChanges.subscribe(value => {
@@ -605,8 +595,8 @@ export class JsonSchemaFormService {
             error[key] === true
               ? addSpaces(key)
               : error[key] === false
-                ? 'Not ' + addSpaces(key)
-                : addSpaces(key) + ': ' + formatError(error[key])
+              ? 'Not ' + addSpaces(key)
+              : addSpaces(key) + ': ' + formatError(error[key])
           )
           .join(', ')
         : addSpaces(error.toString());
@@ -646,7 +636,7 @@ export class JsonSchemaFormService {
     );
   }
 
-  updateValue(ctx: any, value: any): void {
+  updateValue(ctx: WidgetInterface, value: any): void {
     // Set value of current control
     ctx.controlValue = value;
     if (ctx.boundControl) {
@@ -719,7 +709,7 @@ export class JsonSchemaFormService {
     return control ? control.value : null;
   }
 
-  getFormControlGroup(ctx: any): FormArray | FormGroup {
+  getFormControlGroup(ctx: WidgetInterface): FormArray | FormGroup {
     if (!ctx.layoutNode || !isDefined(ctx.layoutNode.dataPointer)) {
       return null;
     }
@@ -777,7 +767,7 @@ export class JsonSchemaFormService {
     }
     const controlGroup = this.getFormControlGroup(ctx);
     const name = this.getFormControlName(ctx);
-    return controlGroup ? hasOwn(controlGroup.controls, name) : false;
+    return controlGroup ? has(controlGroup.controls, name) : false;
   }
 
   addItem(ctx: any, name?: string): boolean {

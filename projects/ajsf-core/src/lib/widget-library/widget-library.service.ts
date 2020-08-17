@@ -3,7 +3,6 @@ import { ButtonComponent } from './button.component';
 import { CheckboxComponent } from './checkbox.component';
 import { CheckboxesComponent } from './checkboxes.component';
 import { FileComponent } from './file.component';
-import { hasOwn } from '../shared/utility.functions';
 import { Injectable } from '@angular/core';
 import { InputComponent } from './input.component';
 import { MessageComponent } from './message.component';
@@ -20,6 +19,7 @@ import { SubmitComponent } from './submit.component';
 import { TabsComponent } from './tabs.component';
 import { TemplateComponent } from './template.component';
 import { TextareaComponent } from './textarea.component';
+import { has } from 'lodash';
 
 @Injectable()
 export class WidgetLibraryService {
@@ -172,7 +172,7 @@ export class WidgetLibraryService {
 
   hasWidget(type: string, widgetSet = 'activeWidgets'): boolean {
     if (!type || typeof type !== 'string') { return false; }
-    return hasOwn(this[widgetSet], type);
+    return has(this[widgetSet], type);
   }
 
   hasDefaultWidget(type: string): boolean {
@@ -186,7 +186,7 @@ export class WidgetLibraryService {
   }
 
   unRegisterWidget(type: string): boolean {
-    if (!hasOwn(this.registeredWidgets, type)) { return false; }
+    if (!has(this.registeredWidgets, type)) { return false; }
     delete this.registeredWidgets[type];
     return this.setActiveWidgets();
   }

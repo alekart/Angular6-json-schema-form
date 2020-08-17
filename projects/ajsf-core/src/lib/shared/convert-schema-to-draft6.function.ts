@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
+import {cloneDeep} from 'lodash';
 
 /**
  * 'convertSchemaToDraft6' function
@@ -273,14 +273,14 @@ export function convertSchemaToDraft6(schema, options: OptionObject = {}) {
           for (const type of newSchema.type) {
             const newType = typeof type === 'string' ? { type } : { ...type };
             Object.keys(newSchema)
-              .filter(key => !newType.hasOwnProperty(key) &&
+              .filter(key => !newType.hasProperty(key) &&
                 ![...(filterKeys[newType.type] || filterKeys.all), 'type', 'default']
                   .includes(key)
               )
               .forEach(key => newType[key] = newSchema[key]);
             anyOf.push(newType);
           }
-          newSchema = newSchema.hasOwnProperty('default') ?
+          newSchema = newSchema.hasProperty('default') ?
             { anyOf, default: newSchema.default } : { anyOf };
           // If type is an object, merge it with the current schema
         } else {

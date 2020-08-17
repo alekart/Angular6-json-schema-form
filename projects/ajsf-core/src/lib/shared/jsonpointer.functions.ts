@@ -1,16 +1,16 @@
+import {Injectable} from '@angular/core';
+import {isArray, isEmpty, isMap, isNumber, isObject, isString, has} from 'lodash';
 import {
   cleanValueOfQuotes,
   copy,
   ExpressionType,
   getExpressionType,
   getKeyAndValueByExpressionType,
-  hasOwn,
   isEqual,
   isNotEqual,
   isNotExpression
 } from './utility.functions';
-import {Injectable} from '@angular/core';
-import {isArray, isDefined, isEmpty, isMap, isNumber, isObject, isString} from './validator.functions';
+import {isDefined} from './validator.functions';
 
 /**
  * 'JsonPointer' class
@@ -48,13 +48,21 @@ export class JsonPointer {
     object, pointer, startSlice = 0, endSlice: number = null,
     getBoolean = false, errors = false
   ) {
-    if (object === null) { return getBoolean ? false : undefined; }
+    if (object === null) {
+      return getBoolean ? false : undefined;
+    }
     let keyArray: any[] = this.parse(pointer, errors);
     if (typeof object === 'object' && keyArray !== null) {
       let subObject = object;
-      if (startSlice >= keyArray.length || endSlice <= -keyArray.length) { return object; }
-      if (startSlice <= -keyArray.length) { startSlice = 0; }
-      if (!isDefined(endSlice) || endSlice >= keyArray.length) { endSlice = keyArray.length; }
+      if (startSlice >= keyArray.length || endSlice <= -keyArray.length) {
+        return object;
+      }
+      if (startSlice <= -keyArray.length) {
+        startSlice = 0;
+      }
+      if (!isDefined(endSlice) || endSlice >= keyArray.length) {
+        endSlice = keyArray.length;
+      }
       keyArray = keyArray.slice(startSlice, endSlice);
       for (let key of keyArray) {
         if (key === '-' && isArray(subObject) && subObject.length) {
@@ -63,7 +71,7 @@ export class JsonPointer {
         if (isMap(subObject) && subObject.has(key)) {
           subObject = subObject.get(key);
         } else if (typeof subObject === 'object' && subObject !== null &&
-          hasOwn(subObject, key)
+          has(subObject, key)
         ) {
           subObject = subObject[key];
         } else {
@@ -167,7 +175,7 @@ export class JsonPointer {
    */
   private static doOwnCheckResult(subObject: Object, keysAndExpression) {
     let ownCheckResult = null;
-    if (!hasOwn(subObject, keysAndExpression.keyAndValue[0])) {
+    if (!has(subObject, keysAndExpression.keyAndValue[0])) {
       if (isEqual(keysAndExpression.expressionType)) {
         ownCheckResult = {passed: false, key: null};
       }
@@ -238,16 +246,24 @@ export class JsonPointer {
    * //  - First value found
    */
   static getFirst(items, defaultValue: any = null, getCopy = false) {
-    if (isEmpty(items)) { return; }
+    if (isEmpty(items)) {
+      return;
+    }
     if (isArray(items)) {
       for (const item of items) {
-        if (isEmpty(item)) { continue; }
+        if (isEmpty(item)) {
+          continue;
+        }
         if (isArray(item) && item.length >= 2) {
-          if (isEmpty(item[0]) || isEmpty(item[1])) { continue; }
+          if (isEmpty(item[0]) || isEmpty(item[1])) {
+            continue;
+          }
           const value = getCopy ?
             this.getCopy(item[0], item[1]) :
             this.get(item[0], item[1]);
-          if (value) { return value; }
+          if (value) {
+            return value;
+          }
           continue;
         }
         console.error('getFirst error: Input not in correct format.\n' +
@@ -258,11 +274,15 @@ export class JsonPointer {
     }
     if (isMap(items)) {
       for (const [object, pointer] of items) {
-        if (object === null || !this.isJsonPointer(pointer)) { continue; }
+        if (object === null || !this.isJsonPointer(pointer)) {
+          continue;
+        }
         const value = getCopy ?
           this.getCopy(object, pointer) :
           this.get(object, pointer);
-        if (value) { return value; }
+        if (value) {
+          return value;
+        }
       }
       return defaultValue;
     }
@@ -318,7 +338,7 @@ export class JsonPointer {
         if (isMap(subObject) && subObject.has(key)) {
           subObject = subObject.get(key);
         } else {
-          if (!hasOwn(subObject, key)) {
+          if (!has(subObject, key)) {
             subObject[key] = (keyArray[i + 1].match(/^(\d+|-)$/)) ? [] : {};
           }
           subObject = subObject[key];
@@ -370,7 +390,7 @@ export class JsonPointer {
           subObject.set(key, copy(subObject.get(key)));
           subObject = subObject.get(key);
         } else {
-          if (!hasOwn(subObject, key)) {
+          if (!has(subObject, key)) {
             subObject[key] = (keyArray[i + 1].match(/^(\d+|-)$/)) ? [] : {};
           }
           subObject[key] = copy(subObject[key]);
@@ -438,7 +458,9 @@ export class JsonPointer {
       let lastKey = keyArray.pop();
       const parentObject = this.get(object, keyArray);
       if (isArray(parentObject)) {
-        if (lastKey === '-') { lastKey = parentObject.length - 1; }
+        if (lastKey === '-') {
+          lastKey = parentObject.length - 1;
+        }
         parentObject.splice(lastKey, 1);
       } else if (isObject(parentObject)) {
         delete parentObject[lastKey];
@@ -474,7 +496,9 @@ export class JsonPointer {
   static dict(object) {
     const results: any = {};
     this.forEachDeep(object, (value, pointer) => {
-      if (typeof value !== 'object') { results[pointer] = value; }
+      if (typeof value !== 'object') {
+        results[pointer] = value;
+      }
     });
     return results;
   }
@@ -515,14 +539,18 @@ export class JsonPointer {
       console.error(`forEachDeep error: Iterator is not a function:`, fn);
       return;
     }
-    if (!bottomUp) { fn(object, pointer, rootObject); }
+    if (!bottomUp) {
+      fn(object, pointer, rootObject);
+    }
     if (isObject(object) || isArray(object)) {
       for (const key of Object.keys(object)) {
         const newPointer = pointer + '/' + this.escape(key);
         this.forEachDeep(object[key], fn, bottomUp, newPointer, rootObject);
       }
     }
-    if (bottomUp) { fn(object, pointer, rootObject); }
+    if (bottomUp) {
+      fn(object, pointer, rootObject);
+    }
   }
 
   /**
@@ -548,15 +576,19 @@ export class JsonPointer {
       return null;
     }
     if (isObject(object) || isArray(object)) {
-      let newObject = isArray(object) ? [ ...object ] : { ...object };
-      if (!bottomUp) { newObject = fn(newObject, pointer, rootObject); }
+      let newObject = isArray(object) ? [...object] : {...object};
+      if (!bottomUp) {
+        newObject = fn(newObject, pointer, rootObject);
+      }
       for (const key of Object.keys(newObject)) {
         const newPointer = pointer + '/' + this.escape(key);
         newObject[key] = this.forEachDeepCopy(
           newObject[key], fn, bottomUp, newPointer, rootObject
         );
       }
-      if (bottomUp) { newObject = fn(newObject, pointer, rootObject); }
+      if (bottomUp) {
+        newObject = fn(newObject, pointer, rootObject);
+      }
       return newObject;
     } else {
       return fn(object, pointer, rootObject);
@@ -601,13 +633,21 @@ export class JsonPointer {
    */
   static parse(pointer, errors = false) {
     if (!this.isJsonPointer(pointer)) {
-      if (errors) { console.error(`parse error: Invalid JSON Pointer: ${pointer}`); }
+      if (errors) {
+        console.error(`parse error: Invalid JSON Pointer: ${pointer}`);
+      }
       return null;
     }
-    if (isArray(pointer)) { return <string[]>pointer; }
+    if (isArray(pointer)) {
+      return <string[]>pointer;
+    }
     if (typeof pointer === 'string') {
-      if ((<string>pointer)[0] === '#') { pointer = pointer.slice(1); }
-      if (<string>pointer === '' || <string>pointer === '/') { return []; }
+      if ((<string>pointer)[0] === '#') {
+        pointer = pointer.slice(1);
+      }
+      if (<string>pointer === '' || <string>pointer === '/') {
+        return [];
+      }
       return (<string>pointer).slice(1).split('/').map(this.unescape);
     }
   }
@@ -626,19 +666,27 @@ export class JsonPointer {
    * // { string } - JSON Pointer string
    */
   static compile(pointer, defaultValue = '', errors = false) {
-    if (pointer === '#') { return ''; }
+    if (pointer === '#') {
+      return '';
+    }
     if (!this.isJsonPointer(pointer)) {
-      if (errors) { console.error(`compile error: Invalid JSON Pointer: ${pointer}`); }
+      if (errors) {
+        console.error(`compile error: Invalid JSON Pointer: ${pointer}`);
+      }
       return null;
     }
     if (isArray(pointer)) {
-      if ((<string[]>pointer).length === 0) { return ''; }
+      if ((<string[]>pointer).length === 0) {
+        return '';
+      }
       return '/' + (<string[]>pointer).map(
         key => key === '' ? defaultValue : this.escape(key)
       ).join('/');
     }
     if (typeof pointer === 'string') {
-      if (pointer[0] === '#') { pointer = pointer.slice(1); }
+      if (pointer[0] === '#') {
+        pointer = pointer.slice(1);
+      }
       return pointer;
     }
   }
@@ -654,8 +702,12 @@ export class JsonPointer {
    */
   static toKey(pointer, errors = false) {
     const keyArray = this.parse(pointer, errors);
-    if (keyArray === null) { return null; }
-    if (!keyArray.length) { return ''; }
+    if (keyArray === null) {
+      return null;
+    }
+    if (!keyArray.length) {
+      return '';
+    }
     return keyArray[keyArray.length - 1];
   }
 
@@ -673,7 +725,9 @@ export class JsonPointer {
     if (isArray(value)) {
       return value.every(key => typeof key === 'string');
     } else if (isString(value)) {
-      if (value === '' || value === '#') { return true; }
+      if (value === '' || value === '#') {
+        return true;
+      }
       if (value[0] === '/' || value.slice(0, 2) === '#/') {
         return !/(~[^01]|~$)/g.test(value);
       }
@@ -698,8 +752,12 @@ export class JsonPointer {
     if (!this.isJsonPointer(shortPointer) || !this.isJsonPointer(longPointer)) {
       if (errors) {
         let invalid = '';
-        if (!this.isJsonPointer(shortPointer)) { invalid += ` 1: ${shortPointer}`; }
-        if (!this.isJsonPointer(longPointer)) { invalid += ` 2: ${longPointer}`; }
+        if (!this.isJsonPointer(shortPointer)) {
+          invalid += ` 1: ${shortPointer}`;
+        }
+        if (!this.isJsonPointer(longPointer)) {
+          invalid += ` 2: ${longPointer}`;
+        }
         console.error(`isSubPointer error: Invalid JSON Pointer ${invalid}`);
       }
       return;
@@ -810,14 +868,14 @@ export class JsonPointer {
     let subGroup = formGroup;
     if (dataPointerArray !== null) {
       for (const key of dataPointerArray) {
-        if (hasOwn(subGroup, 'controls')) {
+        if (has(subGroup, 'controls')) {
           controlPointerArray.push('controls');
           subGroup = subGroup.controls;
         }
         if (isArray(subGroup) && (key === '-')) {
           controlPointerArray.push((subGroup.length - 1).toString());
           subGroup = subGroup[subGroup.length - 1];
-        } else if (hasOwn(subGroup, key)) {
+        } else if (has(subGroup, key)) {
           controlPointerArray.push(key);
           subGroup = subGroup[key];
         } else if (controlMustExist) {
@@ -827,7 +885,7 @@ export class JsonPointer {
           return;
         } else {
           controlPointerArray.push(key);
-          subGroup = { controls: {} };
+          subGroup = {controls: {}};
         }
       }
       return this.compile(controlPointerArray);
@@ -850,13 +908,15 @@ export class JsonPointer {
   static toSchemaPointer(dataPointer, schema) {
     if (this.isJsonPointer(dataPointer) && typeof schema === 'object') {
       const pointerArray = this.parse(dataPointer);
-      if (!pointerArray.length) { return ''; }
+      if (!pointerArray.length) {
+        return '';
+      }
       const firstKey = pointerArray.shift();
       if (schema.type === 'object' || schema.properties || schema.additionalProperties) {
         if ((schema.properties || {})[firstKey]) {
           return `/properties/${this.escape(firstKey)}` +
             this.toSchemaPointer(pointerArray, schema.properties[firstKey]);
-        } else  if (schema.additionalProperties) {
+        } else if (schema.additionalProperties) {
           return '/additionalProperties' +
             this.toSchemaPointer(pointerArray, schema.additionalProperties);
         }
@@ -915,7 +975,9 @@ export class JsonPointer {
       this.has(schema, schemaPointer)
     ) {
       const pointerArray = this.parse(schemaPointer);
-      if (!pointerArray.length) { return ''; }
+      if (!pointerArray.length) {
+        return '';
+      }
       const firstKey = pointerArray.shift();
       if (firstKey === 'properties' ||
         (firstKey === 'items' && isArray(schema.items))
@@ -936,7 +998,9 @@ export class JsonPointer {
       } else if (['contains', 'definitions', 'dependencies', 'additionalItems',
         'additionalProperties', 'patternProperties', 'propertyNames'].includes(firstKey)
       ) {
-        if (errors) { console.error(`toDataPointer error: Ambiguous location`); }
+        if (errors) {
+          console.error(`toDataPointer error: Ambiguous location`);
+        }
       }
       return '';
     }
@@ -967,8 +1031,12 @@ export class JsonPointer {
    * // { string[] } - The resulting array of keys
    */
   static parseObjectPath(path) {
-    if (isArray(path)) { return <string[]>path; }
-    if (this.isJsonPointer(path)) { return this.parse(path); }
+    if (isArray(path)) {
+      return <string[]>path;
+    }
+    if (this.isJsonPointer(path)) {
+      return this.parse(path);
+    }
     if (typeof path === 'string') {
       let index = 0;
       const parts: string[] = [];
@@ -992,17 +1060,23 @@ export class JsonPointer {
             while (nextCB !== -1 && path.charAt(nextCB - 1) === '\\') {
               nextCB = path.indexOf(quote + ']', nextCB + 2);
             }
-            if (nextCB === -1) { nextCB = path.length; }
+            if (nextCB === -1) {
+              nextCB = path.length;
+            }
             parts.push(path.slice(index + 2, nextCB)
               .replace(new RegExp('\\' + quote, 'g'), quote));
             index = nextCB + 2;
           } else { // no enclosing quotes
             let nextCB = path.indexOf(']', nextOB); // next close bracket
-            if (nextCB === -1) { nextCB = path.length; }
+            if (nextCB === -1) {
+              nextCB = path.length;
+            }
             parts.push(path.slice(index + 1, nextCB));
             index = nextCB + 1;
           }
-          if (path.charAt(index) === '.') { index++; }
+          if (path.charAt(index) === '.') {
+            index++;
+          }
         }
       }
       return parts;

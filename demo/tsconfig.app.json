@@ -2,7 +2,42 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": []
+    "types": [],
+    "paths": {
+      "core-js/es7/reflect": [
+        "node_modules/core-js/proposals/reflect-metadata"
+      ],
+      "core-js/es6/*": [
+        "node_modules/core-js/es"
+      ],
+      "core-js/es7/*": [
+        "node_modules/core-js/es"
+      ],
+      "@alekart/ajsf-core": [
+        "projects/ajsf-core/src/public_api.ts"
+      ],
+      "@alekart/ajsf-core/*": [
+        "projects/ajsf-core/src/lib/*"
+      ],
+      "@alekart/ajsf-bootstrap3": [
+        "projects/ajsf-bootstrap3/src/public_api.ts"
+      ],
+      "@alekart/ajsf-bootstrap3/*": [
+        "projects/ajsf-bootstrap3/src/lib/*"
+      ],
+      "@alekart/ajsf-bootstrap4": [
+        "projects/ajsf-bootstrap4/src/public_api.ts"
+      ],
+      "@alekart/ajsf-bootstrap4/*": [
+        "projects/ajsf-bootstrap4/src/lib/*"
+      ],
+      "@alekart/ajsf-material": [
+        "projects/ajsf-material/src/public_api.ts"
+      ],
+      "@alekart/ajsf-material/*": [
+        "projects/ajsf-material/src/lib/*"
+      ]
+    }
   },
   "files": [
     "main.ts",

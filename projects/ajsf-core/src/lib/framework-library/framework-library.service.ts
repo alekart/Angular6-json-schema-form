@@ -1,7 +1,7 @@
 import { Framework } from './framework';
-import { hasOwn } from '../shared/utility.functions';
 import { Inject, Injectable } from '@angular/core';
 import { WidgetLibraryService } from '../widget-library/widget-library.service';
+import { has } from 'lodash';
 
 // Possible future frameworks:
 // - Foundation 6:
@@ -42,20 +42,20 @@ export class FrameworkLibraryService {
     this.activeFramework =
       typeof framework === 'string' && this.hasFramework(framework) ?
         this.frameworkLibrary[framework] :
-      typeof framework === 'object' && hasOwn(framework, 'framework') ?
+      typeof framework === 'object' && has(framework, 'framework') ?
         framework :
         this.frameworkLibrary[this.defaultFramework];
     return this.registerFrameworkWidgets(this.activeFramework);
   }
 
   registerFrameworkWidgets(framework: Framework): boolean {
-    return hasOwn(framework, 'widgets') ?
+    return has(framework, 'widgets') ?
       this.widgetLibrary.registerFrameworkWidgets(framework.widgets) :
       this.widgetLibrary.unRegisterFrameworkWidgets();
   }
 
   public hasFramework(type: string): boolean {
-    return hasOwn(this.frameworkLibrary, type);
+    return has(this.frameworkLibrary, type);
   }
 
   public getFramework(): any {

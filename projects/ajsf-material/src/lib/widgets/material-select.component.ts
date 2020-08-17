@@ -1,8 +1,9 @@
 import { AbstractControl } from '@angular/forms';
 import {Component, Inject, Input, OnInit, Optional} from '@angular/core';
-import { JsonSchemaFormService, buildTitleMap, isArray } from '@alekart/ajsf-core';
+import { JsonSchemaFormService, buildTitleMap } from '@alekart/ajsf-core';
 import { MAT_LABEL_GLOBAL_OPTIONS } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { isArray } from 'lodash';
 
 @Component({
   // tslint:disable-next-line:component-selector

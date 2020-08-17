@@ -1,7 +1,8 @@
 import { AbstractControl } from '@angular/forms';
-import { buildTitleMap, isArray } from '../shared';
+import { buildTitleMap } from '../shared';
 import { Component, Input, OnInit } from '@angular/core';
 import { JsonSchemaFormService } from '../json-schema-form.service';
+import { isArray } from 'lodash';
 
 
 @Component({

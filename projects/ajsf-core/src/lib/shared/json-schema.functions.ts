@@ -1,16 +1,20 @@
-import cloneDeep from 'lodash/cloneDeep';
-import { forEach, hasOwn, mergeFilteredObject } from './utility.functions';
+import {
+  cloneDeep,
+  isArray,
+  isNumber,
+  isObject,
+  isString,
+  has,
+} from 'lodash';
+import {forEachRecursive, mergeFilteredObject} from './utility.functions';
 import {
   getType,
   hasValue,
   inArray,
-  isArray,
-  isNumber,
-  isObject,
-  isString
-  } from './validator.functions';
-import { JsonPointer } from './jsonpointer.functions';
-import { mergeSchemas } from './merge-schemas.function';
+
+} from './validator.functions';
+import {JsonPointer} from './jsonpointer.functions';
+import {mergeSchemas} from './merge-schemas.function';
 
 
 /**
@@ -95,26 +99,34 @@ export function buildSchemaFromData(
   const newSchema: any = {};
   const getFieldType = (value: any): string => {
     const fieldType = getType(value, 'strict');
-    return { integer: 'number', null: 'string' }[fieldType] || fieldType;
+    return {integer: 'number', null: 'string'}[fieldType] || fieldType;
   };
   const buildSubSchema = (value) =>
     buildSchemaFromData(value, requireAllFields, false);
-  if (isRoot) { newSchema.$schema = 'http://json-schema.org/draft-06/schema#'; }
+  if (isRoot) {
+    newSchema.$schema = 'http://json-schema.org/draft-06/schema#';
+  }
   newSchema.type = getFieldType(data);
   if (newSchema.type === 'object') {
     newSchema.properties = {};
-    if (requireAllFields) { newSchema.required = []; }
+    if (requireAllFields) {
+      newSchema.required = [];
+    }
     for (const key of Object.keys(data)) {
       newSchema.properties[key] = buildSubSchema(data[key]);
-      if (requireAllFields) { newSchema.required.push(key); }
+      if (requireAllFields) {
+        newSchema.required.push(key);
+      }
     }
   } else if (newSchema.type === 'array') {
     newSchema.items = data.map(buildSubSchema);
     // If all items are the same type, use an object for items instead of an array
     if ((new Set(data.map(getFieldType))).size === 1) {
-      newSchema.items = newSchema.items.reduce((a, b) => ({ ...a, ...b }), {});
+      newSchema.items = newSchema.items.reduce((a, b) => ({...a, ...b}), {});
     }
-    if (requireAllFields) { newSchema.minItems = 1; }
+    if (requireAllFields) {
+      newSchema.minItems = 1;
+    }
   }
   return newSchema;
 }
@@ -145,7 +157,9 @@ export function getFromSchema(schema, dataPointer, returnType = 'schema') {
   let subSchema = schema;
   const schemaPointer = [];
   const length = dataPointerArray.length;
-  if (returnType.slice(0, 6) === 'parent') { dataPointerArray.length--; }
+  if (returnType.slice(0, 6) === 'parent') {
+    dataPointerArray.length--;
+  }
   for (let i = 0; i < length; ++i) {
     const parentSchema = subSchema;
     const key = dataPointerArray[i];
@@ -157,7 +171,7 @@ export function getFromSchema(schema, dataPointer, returnType = 'schema') {
       return null;
     }
     if (subSchema.type === 'array' && (!isNaN(key) || key === '-')) {
-      if (hasOwn(subSchema, 'items')) {
+      if (has(subSchema, 'items')) {
         if (isObject(subSchema.items)) {
           subSchemaFound = true;
           subSchema = subSchema.items;
@@ -176,11 +190,11 @@ export function getFromSchema(schema, dataPointer, returnType = 'schema') {
         schemaPointer.push('additionalItems');
       } else if (subSchema.additionalItems !== false) {
         subSchemaFound = true;
-        subSchema = { };
+        subSchema = {};
         schemaPointer.push('additionalItems');
       }
     } else if (subSchema.type === 'object') {
-      if (isObject(subSchema.properties) && hasOwn(subSchema.properties, key)) {
+      if (isObject(subSchema.properties) && has(subSchema.properties, key)) {
         subSchemaFound = true;
         subSchema = subSchema.properties[key];
         schemaPointer.push('properties', key);
@@ -190,7 +204,7 @@ export function getFromSchema(schema, dataPointer, returnType = 'schema') {
         schemaPointer.push('additionalProperties');
       } else if (subSchema.additionalProperties !== false) {
         subSchemaFound = true;
-        subSchema = { };
+        subSchema = {};
         schemaPointer.push('additionalProperties');
       }
     }
@@ -230,10 +244,14 @@ export function getFromSchema(schema, dataPointer, returnType = 'schema') {
 export function removeRecursiveReferences(
   pointer, recursiveRefMap, arrayMap = new Map()
 ) {
-  if (!pointer) { return ''; }
+  if (!pointer) {
+    return '';
+  }
   let genericPointer =
     JsonPointer.toGenericPointer(JsonPointer.compile(pointer), arrayMap);
-  if (genericPointer.indexOf('/') === -1) { return genericPointer; }
+  if (genericPointer.indexOf('/') === -1) {
+    return genericPointer;
+  }
   let possibleReferences = true;
   while (possibleReferences) {
     possibleReferences = false;
@@ -268,42 +286,52 @@ export function getInputType(schema, layoutNode: any = null) {
     [schema, '/widget/component'],
     [schema, '/widget']
   ]);
-  if (isString(controlType)) { return checkInlineType(controlType, schema, layoutNode); }
+  if (isString(controlType)) {
+    return checkInlineType(controlType, schema, layoutNode);
+  }
   let schemaType = schema.type;
   if (schemaType) {
     if (isArray(schemaType)) { // If multiple types listed, use most inclusive type
       schemaType =
-        inArray('object', schemaType) && hasOwn(schema, 'properties') ? 'object' :
-        inArray('array', schemaType) && hasOwn(schema, 'items') ? 'array' :
-        inArray('array', schemaType) && hasOwn(schema, 'additionalItems') ? 'array' :
-        inArray('string', schemaType) ? 'string' :
-        inArray('number', schemaType) ? 'number' :
-        inArray('integer', schemaType) ? 'integer' :
-        inArray('boolean', schemaType) ? 'boolean' : 'unknown';
+        inArray('object', schemaType) && has(schema, 'properties') ? 'object' :
+          inArray('array', schemaType) && has(schema, 'items') ? 'array' :
+            inArray('array', schemaType) && has(schema, 'additionalItems') ? 'array' :
+              inArray('string', schemaType) ? 'string' :
+                inArray('number', schemaType) ? 'number' :
+                  inArray('integer', schemaType) ? 'integer' :
+                    inArray('boolean', schemaType) ? 'boolean' : 'unknown';
     }
-    if (schemaType === 'boolean') { return 'checkbox'; }
+    if (schemaType === 'boolean') {
+      return 'checkbox';
+    }
     if (schemaType === 'object') {
-      if (hasOwn(schema, 'properties') || hasOwn(schema, 'additionalProperties')) {
+      if (has(schema, 'properties') || has(schema, 'additionalProperties')) {
         return 'section';
       }
       // TODO: Figure out how to handle additionalProperties
-      if (hasOwn(schema, '$ref')) { return '$ref'; }
+      if (has(schema, '$ref')) {
+        return '$ref';
+      }
     }
     if (schemaType === 'array') {
       const itemsObject = JsonPointer.getFirst([
         [schema, '/items'],
         [schema, '/additionalItems']
       ]) || {};
-      return hasOwn(itemsObject, 'enum') && schema.maxItems !== 1 ?
+      return has(itemsObject, 'enum') && schema.maxItems !== 1 ?
         checkInlineType('checkboxes', schema, layoutNode) : 'array';
     }
-    if (schemaType === 'null') { return 'none'; }
+    if (schemaType === 'null') {
+      return 'none';
+    }
     if (JsonPointer.has(layoutNode, '/options/titleMap') ||
-      hasOwn(schema, 'enum') || getTitleMapFromOneOf(schema, null, true)
-    ) { return 'select'; }
+      has(schema, 'enum') || getTitleMapFromOneOf(schema, null, true)
+    ) {
+      return 'select';
+    }
     if (schemaType === 'number' || schemaType === 'integer') {
-      return (schemaType === 'integer' || hasOwn(schema, 'multipleOf')) &&
-        hasOwn(schema, 'maximum') && hasOwn(schema, 'minimum') ? 'range' : schemaType;
+      return (schemaType === 'integer' || has(schema, 'multipleOf')) &&
+      has(schema, 'maximum') && has(schema, 'minimum') ? 'range' : schemaType;
     }
     if (schemaType === 'string') {
       return {
@@ -315,11 +343,17 @@ export function getInputType(schema, layoutNode: any = null) {
       }[schema.format] || 'text';
     }
   }
-  if (hasOwn(schema, '$ref')) { return '$ref'; }
-  if (isArray(schema.oneOf) || isArray(schema.anyOf)) { return 'one-of'; }
+  if (has(schema, '$ref')) {
+    return '$ref';
+  }
+  if (isArray(schema.oneOf) || isArray(schema.anyOf)) {
+    return 'one-of';
+  }
   console.error(`getInputType error: Unable to determine input type for ${schemaType}`);
   console.error('schema', schema);
-  if (layoutNode) { console.error('layoutNode', layoutNode); }
+  if (layoutNode) {
+    console.error('layoutNode', layoutNode);
+  }
   return 'none';
 }
 
@@ -371,14 +405,16 @@ export function checkInlineType(controlType, schema, layoutNode: any = null) {
  * //  { string } schemaPointer - the pointer to the item to check
  * // { boolean } - true if the item is required, false if not
  */
-export function isInputRequired(schema, schemaPointer) {
+export function isInputRequired(schema: any, schemaPointer) {
   if (!isObject(schema)) {
     console.error('isInputRequired error: Input schema must be an object.');
     return false;
   }
   const listPointerArray = JsonPointer.parse(schemaPointer);
   if (isArray(listPointerArray)) {
-    if (!listPointerArray.length) { return schema.required === true; }
+    if (!listPointerArray.length) {
+      return (schema as any).required === true;
+    }
     const keyName = listPointerArray.pop();
     const nextToLastKey = listPointerArray[listPointerArray.length - 1];
     if (['properties', 'additionalProperties', 'patternProperties', 'items', 'additionalItems']
@@ -391,7 +427,7 @@ export function isInputRequired(schema, schemaPointer) {
       return parentSchema.required.includes(keyName);
     }
     if (parentSchema.type === 'array') {
-      return hasOwn(parentSchema, 'minItems') &&
+      return has(parentSchema, 'minItems') &&
         isNumber(keyName) &&
         +parentSchema.minItems > +keyName;
     }
@@ -408,43 +444,49 @@ export function isInputRequired(schema, schemaPointer) {
  * // { void }
  */
 export function updateInputOptions(layoutNode, schema, jsf) {
-  if (!isObject(layoutNode) || !isObject(layoutNode.options)) { return; }
+  if (!isObject(layoutNode) || !isObject((layoutNode as any).options)) {
+    return;
+  }
 
   // Set all option values in layoutNode.options
-  const newOptions: any = { };
+  const newOptions: any = {};
   const fixUiKeys = key => key.slice(0, 3).toLowerCase() === 'ui:' ? key.slice(3) : key;
   mergeFilteredObject(newOptions, jsf.formOptions.defautWidgetOptions, [], fixUiKeys);
-  [ [ JsonPointer.get(schema, '/ui:widget/options'), [] ],
-    [ JsonPointer.get(schema, '/ui:widget'), [] ],
-    [ schema, [
+  [[JsonPointer.get(schema, '/ui:widget/options'), []],
+    [JsonPointer.get(schema, '/ui:widget'), []],
+    [schema, [
       'additionalProperties', 'additionalItems', 'properties', 'items',
       'required', 'type', 'x-schema-form', '$ref'
-    ] ],
-    [ JsonPointer.get(schema, '/x-schema-form/options'), [] ],
-    [ JsonPointer.get(schema, '/x-schema-form'), ['items', 'options'] ],
-    [ layoutNode, [
+    ]],
+    [JsonPointer.get(schema, '/x-schema-form/options'), []],
+    [JsonPointer.get(schema, '/x-schema-form'), ['items', 'options']],
+    [layoutNode, [
       '_id', '$ref', 'arrayItem', 'arrayItemType', 'dataPointer', 'dataType',
       'items', 'key', 'name', 'options', 'recursiveReference', 'type', 'widget'
-    ] ],
-    [ layoutNode.options, [] ],
-  ].forEach(([ object, excludeKeys ]) =>
+    ]],
+    [(layoutNode as any).options, []],
+  ].forEach(([object, excludeKeys]) =>
     mergeFilteredObject(newOptions, object, excludeKeys, fixUiKeys)
   );
-  if (!hasOwn(newOptions, 'titleMap')) {
+  if (!has(newOptions, 'titleMap')) {
     let newTitleMap: any = null;
     newTitleMap = getTitleMapFromOneOf(schema, newOptions.flatList);
-    if (newTitleMap) { newOptions.titleMap = newTitleMap; }
-    if (!hasOwn(newOptions, 'titleMap') && !hasOwn(newOptions, 'enum') && hasOwn(schema, 'items')) {
+    if (newTitleMap) {
+      newOptions.titleMap = newTitleMap;
+    }
+    if (!has(newOptions, 'titleMap') && !has(newOptions, 'enum') && has(schema, 'items')) {
       if (JsonPointer.has(schema, '/items/titleMap')) {
         newOptions.titleMap = schema.items.titleMap;
       } else if (JsonPointer.has(schema, '/items/enum')) {
         newOptions.enum = schema.items.enum;
-        if (!hasOwn(newOptions, 'enumNames') && JsonPointer.has(schema, '/items/enumNames')) {
+        if (!has(newOptions, 'enumNames') && JsonPointer.has(schema, '/items/enumNames')) {
           newOptions.enumNames = schema.items.enumNames;
         }
       } else if (JsonPointer.has(schema, '/items/oneOf')) {
         newTitleMap = getTitleMapFromOneOf(schema.items, newOptions.flatList);
-        if (newTitleMap) { newOptions.titleMap = newTitleMap; }
+        if (newTitleMap) {
+          newOptions.titleMap = newTitleMap;
+        }
       }
     }
   }
@@ -463,7 +505,7 @@ export function updateInputOptions(layoutNode, schema, jsf) {
     newOptions.typeahead = newOptions.tagsinput.typeahead;
   }
 
-  layoutNode.options = newOptions;
+  (layoutNode as any).options = newOptions;
 }
 
 /**
@@ -481,11 +523,15 @@ export function getTitleMapFromOneOf(
   const oneOf = schema.oneOf || schema.anyOf || null;
   if (isArray(oneOf) && oneOf.every(item => item.title)) {
     if (oneOf.every(item => isArray(item.enum) && item.enum.length === 1)) {
-      if (validateOnly) { return true; }
-      titleMap = oneOf.map(item => ({ name: item.title, value: item.enum[0] }));
+      if (validateOnly) {
+        return true;
+      }
+      titleMap = oneOf.map(item => ({name: item.title, value: item.enum[0]}));
     } else if (oneOf.every(item => item.const)) {
-      if (validateOnly) { return true; }
-      titleMap = oneOf.map(item => ({ name: item.title, value: item.const }));
+      if (validateOnly) {
+        return true;
+      }
+      titleMap = oneOf.map(item => ({name: item.title, value: item.const}));
     }
 
     // if flatList !== false and some items have colons, make grouped map
@@ -496,12 +542,12 @@ export function getTitleMapFromOneOf(
       // Split name on first colon to create grouped map (name -> group: name)
       const newTitleMap = titleMap.map(title => {
         const [group, name] = title.name.split(/: (.+)/);
-        return group && name ? { ...title, group, name } : title;
+        return group && name ? {...title, group, name} : title;
       });
 
       // If flatList === true or at least one group has multiple items, use grouped map
       if (flatList === true || newTitleMap.some((title, index) => index &&
-        hasOwn(title, 'group') && title.group === newTitleMap[index - 1].group
+        has(title, 'group') && title.group === newTitleMap[index - 1].group
       )) {
         titleMap = newTitleMap;
       }
@@ -517,41 +563,54 @@ export function getTitleMapFromOneOf(
  * // { validators }
  */
 export function getControlValidators(schema) {
-  if (!isObject(schema)) { return null; }
-  const validators: any = { };
-  if (hasOwn(schema, 'type')) {
-    switch (schema.type) {
+  if (!isObject(schema)) {
+    return null;
+  }
+  const validators: any = {};
+  if (has(schema, 'type')) {
+    switch ((schema as any).type) {
       case 'string':
-        forEach(['pattern', 'format', 'minLength', 'maxLength'], (prop) => {
-          if (hasOwn(schema, prop)) { validators[prop] = [schema[prop]]; }
+        forEachRecursive(['pattern', 'format', 'minLength', 'maxLength'], (prop) => {
+          if (has(schema, prop)) {
+            validators[prop] = [schema[prop]];
+          }
         });
-      break;
-      case 'number': case 'integer':
-        forEach(['Minimum', 'Maximum'], (ucLimit) => {
+        break;
+      case 'number':
+      case 'integer':
+        forEachRecursive(['Minimum', 'Maximum'], (ucLimit) => {
           const eLimit = 'exclusive' + ucLimit;
           const limit = ucLimit.toLowerCase();
-          if (hasOwn(schema, limit)) {
-            const exclusive = hasOwn(schema, eLimit) && schema[eLimit] === true;
+          if (has(schema, limit)) {
+            const exclusive = has(schema, eLimit) && schema[eLimit] === true;
             validators[limit] = [schema[limit], exclusive];
           }
         });
-        forEach(['multipleOf', 'type'], (prop) => {
-          if (hasOwn(schema, prop)) { validators[prop] = [schema[prop]]; }
+        forEachRecursive(['multipleOf', 'type'], (prop) => {
+          if (has(schema, prop)) {
+            validators[prop] = [schema[prop]];
+          }
         });
-      break;
+        break;
       case 'object':
-        forEach(['minProperties', 'maxProperties', 'dependencies'], (prop) => {
-          if (hasOwn(schema, prop)) { validators[prop] = [schema[prop]]; }
+        forEachRecursive(['minProperties', 'maxProperties', 'dependencies'], (prop) => {
+          if (has(schema, prop)) {
+            validators[prop] = [schema[prop]];
+          }
         });
-      break;
+        break;
       case 'array':
-        forEach(['minItems', 'maxItems', 'uniqueItems'], (prop) => {
-          if (hasOwn(schema, prop)) { validators[prop] = [schema[prop]]; }
+        forEachRecursive(['minItems', 'maxItems', 'uniqueItems'], (prop) => {
+          if (has(schema, prop)) {
+            validators[prop] = [schema[prop]];
+          }
         });
-      break;
+        break;
     }
   }
-  if (hasOwn(schema, 'enum')) { validators.enum = [schema.enum]; }
+  if (has(schema, 'enum')) {
+    validators.enum = [(schema as any).enum];
+  }
   return validators;
 }
 
@@ -583,7 +642,7 @@ export function resolveSchemaReferences(
 
   // Search schema for all $ref links, and build full refLibrary
   JsonPointer.forEachDeep(schema, (subSchema, subSchemaPointer) => {
-    if (hasOwn(subSchema, '$ref') && isString(subSchema['$ref'])) {
+    if (has(subSchema, '$ref') && isString(subSchema['$ref'])) {
       const refPointer = JsonPointer.compile(subSchema['$ref']);
       refLinks.add(refPointer);
       refMapSet.add(subSchemaPointer + '~~' + refPointer);
@@ -635,7 +694,7 @@ export function resolveSchemaReferences(
 
   // Create compiled schema by replacing all non-recursive $ref links with
   // thieir linked schemas and, where possible, combining schemas in allOf arrays.
-  let compiledSchema = { ...schema };
+  let compiledSchema: any = {...schema};
   delete compiledSchema.definitions;
   compiledSchema =
     getSubSchema(compiledSchema, '', refLibrary, recursiveRefMap);
@@ -647,9 +706,9 @@ export function resolveSchemaReferences(
       let refPointer = JsonPointer.compile(subSchema['$ref']);
       if (!JsonPointer.isSubPointer(refPointer, subSchemaPointer, true)) {
         refPointer = removeRecursiveReferences(subSchemaPointer, recursiveRefMap);
-        JsonPointer.set(compiledSchema, subSchemaPointer, { $ref: `#${refPointer}` });
+        JsonPointer.set(compiledSchema, subSchemaPointer, {$ref: `#${refPointer}`});
       }
-      if (!hasOwn(schemaRefLibrary, 'refPointer')) {
+      if (!has(schemaRefLibrary, 'refPointer')) {
         schemaRefLibrary[refPointer] = !refPointer.length ? compiledSchema :
           getSubSchema(compiledSchema, refPointer, schemaRefLibrary, recursiveRefMap);
       }
@@ -663,7 +722,7 @@ export function resolveSchemaReferences(
       }
     }
     if (subSchema.type === 'array' &&
-      (hasOwn(subSchema, 'items') || hasOwn(subSchema, 'additionalItems'))
+      (has(subSchema, 'items') || has(subSchema, 'additionalItems'))
     ) {
       const dataPointer = JsonPointer.toDataPointer(subSchemaPointer, compiledSchema);
       if (!arrayMap.has(dataPointer)) {
@@ -692,14 +751,18 @@ export function getSubSchema(
   if (!schemaRefLibrary || !schemaRecursiveRefMap) {
     return JsonPointer.getCopy(schema, pointer);
   }
-  if (typeof pointer !== 'string') { pointer = JsonPointer.compile(pointer); }
-  usedPointers = [ ...usedPointers, pointer ];
+  if (typeof pointer !== 'string') {
+    pointer = JsonPointer.compile(pointer);
+  }
+  usedPointers = [...usedPointers, pointer];
   let newSchema: any = null;
   if (pointer === '') {
     newSchema = cloneDeep(schema);
   } else {
     const shortPointer = removeRecursiveReferences(pointer, schemaRecursiveRefMap);
-    if (shortPointer !== pointer) { usedPointers = [ ...usedPointers, shortPointer ]; }
+    if (shortPointer !== pointer) {
+      usedPointers = [...usedPointers, shortPointer];
+    }
     newSchema = JsonPointer.getFirstCopy([
       [schemaRefLibrary, [shortPointer]],
       [schema, pointer],
@@ -710,8 +773,8 @@ export function getSubSchema(
     if (isObject(subSchema)) {
 
       // Replace non-recursive $ref links with referenced schemas
-      if (isString(subSchema.$ref)) {
-        const refPointer = JsonPointer.compile(subSchema.$ref);
+      if (isString((subSchema as any).$ref)) {
+        const refPointer = JsonPointer.compile((subSchema as any).$ref);
         if (refPointer.length && usedPointers.every(ptr =>
           !JsonPointer.isSubPointer(refPointer, ptr, true)
         )) {
@@ -721,8 +784,8 @@ export function getSubSchema(
           if (Object.keys(subSchema).length === 1) {
             return refSchema;
           } else {
-            const extraKeys = { ...subSchema };
-            delete extraKeys.$ref;
+            const extraKeys = {...subSchema};
+            delete (extraKeys as any).$ref;
             return mergeSchemas(refSchema, extraKeys);
           }
         }
@@ -731,10 +794,12 @@ export function getSubSchema(
       // TODO: Convert schemas with 'type' arrays to 'oneOf'
 
       // Combine allOf subSchemas
-      if (isArray(subSchema.allOf)) { return combineAllOf(subSchema); }
+      if (isArray((subSchema as any).allOf)) {
+        return combineAllOf(subSchema);
+      }
 
       // Fix incorrectly placed array object required lists
-      if (subSchema.type === 'array' && isArray(subSchema.required)) {
+      if ((subSchema as any).type === 'array' && isArray((subSchema as any).required)) {
         return fixRequiredArrayProperties(subSchema);
       }
     }
@@ -752,11 +817,13 @@ export function getSubSchema(
  * //  - converted schema object
  */
 export function combineAllOf(schema) {
-  if (!isObject(schema) || !isArray(schema.allOf)) { return schema; }
-  let mergedSchema = mergeSchemas(...schema.allOf);
+  if (!isObject(schema) || !isArray((schema as any).allOf)) {
+    return schema;
+  }
+  let mergedSchema = mergeSchemas(...(schema as any).allOf);
   if (Object.keys(schema).length > 1) {
-    const extraKeys = { ...schema };
-    delete extraKeys.allOf;
+    const extraKeys = {...schema};
+    delete (extraKeys as any).allOf;
     mergedSchema = mergeSchemas(mergedSchema, extraKeys);
   }
   return mergedSchema;
@@ -773,11 +840,11 @@ export function combineAllOf(schema) {
  */
 export function fixRequiredArrayProperties(schema) {
   if (schema.type === 'array' && isArray(schema.required)) {
-    const itemsObject = hasOwn(schema.items, 'properties') ? 'items' :
-      hasOwn(schema.additionalItems, 'properties') ? 'additionalItems' : null;
-    if (itemsObject && !hasOwn(schema[itemsObject], 'required') && (
-      hasOwn(schema[itemsObject], 'additionalProperties') ||
-      schema.required.every(key => hasOwn(schema[itemsObject].properties, key))
+    const itemsObject = has(schema.items, 'properties') ? 'items' :
+      has(schema.additionalItems, 'properties') ? 'additionalItems' : null;
+    if (itemsObject && !has(schema[itemsObject], 'required') && (
+      has(schema[itemsObject], 'additionalProperties') ||
+      schema.required.every(key => has(schema[itemsObject].properties, key))
     )) {
       schema = cloneDeep(schema);
       schema[itemsObject].required = schema.required;
