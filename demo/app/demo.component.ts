@@ -35,18 +35,18 @@ export class DemoComponent implements OnInit {
     'zh': 'Chinese',
     'de': 'German',
   };
-  frameworkList: any = ['material-design', 'bootstrap-3', 'bootstrap-4', 'no-framework'];
+  frameworkList: any = ['bootstrap-4', 'bootstrap-3', 'material-design', 'no-framework'];
   frameworks: any = {
+    'bootstrap-4': 'Bootstrap 4',
     'material-design': 'Material Design',
     'bootstrap-3': 'Bootstrap 3',
-    'bootstrap-4': 'Bootstrap 4',
     'no-framework': 'None (plain HTML)',
   };
   selectedSet = 'ng-jsf';
   selectedSetName = '';
   selectedExample = 'ng-jsf-flex-layout';
   selectedExampleName = 'Flexbox layout';
-  selectedFramework = 'material-design';
+  selectedFramework = 'bootstrap-4';
   selectedLanguage = 'en';
   visible = {
     options: true,
