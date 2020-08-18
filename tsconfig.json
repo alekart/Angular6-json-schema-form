@@ -1,5 +1,8 @@
 {
   "compileOnSave": false,
+  "angularCompilerOptions": {
+    "enableIvy": false
+  },
   "compilerOptions": {
     "downlevelIteration": true,
     "importHelpers": true,
@@ -32,11 +35,6 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "core-js/es7/reflect": [
-        "node_modules/core-js/proposals/reflect-metadata"
-      ],
-      "core-js/es6/*": ["node_modules/core-js/es"],
-      "core-js/es7/*": ["node_modules/core-js/es"],
       "@alekart/ajsf-core": [
         "dist/core",
         "projects/ajsf-core/src/public_api.ts"
