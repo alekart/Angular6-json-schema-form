@@ -27,7 +27,7 @@
     "build:bs3": "ng build ajsf-bootstrap3",
     "build:material": "ng build ajsf-material",
     "build-core-dev": "ng build ajsf-core",
-    "build-libs": "run-p build:*",
+    "build-libs": "run-s build:*",
     "postbuild-core": "cp README.md LICENSE  dist/core/",
     "buildDemo": "yarn build-libs && ng build --prod --base-href ./",
     "build-snapshot": "run-s set-snap-version build-libs pack-libs && rm -rf ./snapshots || : && mkdir snapshots || : && cp $(find ./dist/ -name '*.tgz') ./snapshots/",
