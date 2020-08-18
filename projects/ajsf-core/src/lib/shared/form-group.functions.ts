@@ -20,9 +20,10 @@ import {
   isObject,
   isPrimitive,
   SchemaPrimitiveType,
+  SchemaType,
   toJavaScriptType,
   toSchemaType
-  } from './validator.functions';
+} from './validator.functions';
 import { JsonPointer, Pointer } from './jsonpointer.functions';
 import { JsonValidators } from './json.validators';
 
@@ -430,7 +431,7 @@ export function formatFormData(
 
           // If returnEmptyFields === false,
           // only add empty arrays and objects to required keys
-        } else if (schemaType === 'object' && !returnEmptyFields) {
+        } else if (schemaType as SchemaType === 'object' && !returnEmptyFields) {
           (dataMap.get(genericPointer).get('required') || []).forEach(key => {
             const keySchemaType =
               dataMap.get(`${genericPointer}/${key}`).get('schemaType');
