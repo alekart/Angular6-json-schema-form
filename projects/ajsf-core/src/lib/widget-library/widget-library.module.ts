@@ -13,7 +13,7 @@ import { OrderableDirective } from './orderable.directive';
   providers:       [ JsonSchemaFormService ]
 })
 export class WidgetLibraryModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<WidgetLibraryModule> {
     return {
       ngModule: WidgetLibraryModule,
       providers: [ JsonSchemaFormService ]
