@@ -1,6 +1,6 @@
 {
   "name": "@alekart/ajsf-core",
-  "version": "2.0.0",
+  "version": "2.0.1-snapshot",
   "description": "Angular JSON Schema Form builder",
   "author": "https://github.com/alekart/ajsf/graphs/contributors",
   "keywords": [
