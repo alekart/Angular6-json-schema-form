@@ -31,7 +31,8 @@
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": true,
-    "annotationsAs": "decorators"
+    "annotationsAs": "decorators",
+    "enableIvy": false
   },
   "exclude": [
     "src/test.ts",
