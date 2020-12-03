@@ -57,6 +57,10 @@ function bumpVersion(currentVersion, bumpOperation, nextIncrementParam) {
     // only used in automatic acceptance build
     updatedVersion = markDate(currentVersion);
     break;
+  case 'time':
+    // only used in automatic acceptance build
+    updatedVersion = markTime(currentVersion);
+    break;
   case 'major':
   case 'minor':
   case 'patch':
@@ -79,6 +83,7 @@ function bumpVersion(currentVersion, bumpOperation, nextIncrementParam) {
   if (bumpOperation !== 'hash'
     && bumpOperation !== 'snap'
     && bumpOperation !== 'date'
+    && bumpOperation !== 'time'
     && (nextIncrementParam !== 'force' && semver.lt(updatedVersion, currentVersion))
   ) {
     console.error('New version should be greater than the current');
@@ -116,6 +121,16 @@ function markDate(version) {
   const m = date.getMonth() + 1;
   const d = date.getDate();
   return `${version}-${padStart(m, 2, '0')}${padStart(d, 2, '0')}`;
+}
+
+/**
+ * Add "-HHmm" (hour, minutes) time suffix to the version
+ * @param version {string}
+ * @returns {string}
+ */
+function markTime(version) {
+  const date = new Date();
+  return `${version}-${padStart(date.getHours(), 2, '0')}${padStart(date.getMinutes(), 2, '0')}`;
 }
 
 /**
