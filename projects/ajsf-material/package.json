@@ -1,6 +1,6 @@
 {
   "name": "@alekart/ajsf-material",
-  "version": "2.0.1-snapshot",
+  "version": "2.1.0",
   "description": "Material Design framework for Angular JSON Schema Form builder",
   "repository": {
     "type": "git",
